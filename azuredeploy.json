@@ -1,0 +1,135 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "nodeName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the web app that you wish to create."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "Describes plan's pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+      }
+    },
+    "skuCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "metadata": {
+        "description": "Describes plan's instance count"
+      }
+    },
+    "repoURL": {
+      "type": "string",
+      "defaultValue": "https://github.com/qbranch-code/microservicebus-node.git",
+      "metadata": {
+        "description": "The URL for the GitHub repository that contains the project to deploy."
+      }
+    },
+    "branch": {
+      "type": "string",
+      "defaultValue": "master",
+      "metadata": {
+        "description": "The branch of the GitHub repository to use."
+      }
+    },
+    "hubUri": {
+      "type": "string",
+      "defaultValue": "wss://microservicebus.com",
+      "metadata": {
+        "description": "The microServiceBus Hub address"
+      }
+    },
+    "organizationaId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The key of the microServiceBus organization."
+      }
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-08-01",
+      "name": "[parameters('nodeName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "HostingPlan"
+      },
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "capacity": "[parameters('skuCapacity')]"
+      },
+      "properties": {
+        "name": "[parameters('nodeName')]"
+      }
+    },
+    {
+      "apiVersion": "2015-08-01",
+      "name": "[parameters('nodeName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('nodeName'))]": "Resource",
+        "displayName": "Website"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', parameters('nodeName'))]"
+      ],
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "web",
+          "type": "sourcecontrols",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', concat(parameters('nodeName')))]"
+          ],
+          "properties": {
+            "repoUrl": "https://github.com/wmmihaa/microservicebus-node.git",
+            "branch": "master",
+            "IsManualIntegration": true
+          }
+        }
+      ],
+      "properties": {
+        "name": "[parameters('nodeName')]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('nodeName'))]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "Name": "hubUri",
+              "Value": "[parameters('hubUri')]"
+            },
+            {
+              "Name": "nodeName",
+              "Value": "[parameters('nodeName')]"
+            },
+            {
+              "Name": "organizationaId",
+              "Value": "[parameters('organizationaId')]"
+            }
+          ]
+        }
+      }
+    }
+  ]
+} 

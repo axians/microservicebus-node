@@ -1,0 +1,33 @@
+﻿gulpfile.js
+Gruntfile.js
+simulator.js
+BEFORE PUBLISH.md
+.vs
+.travis.yml
+*.dat
+*.dat.tmp
+*.bat
+*.vspscc
+*.njsproj
+*.sln
+*.vssscc
+*.vs
+*.Tests
+*.suo
+*.heapsnapshot
+microServiceBus.BizTalk
+persist
+services
+typings
+Metadata
+coverage
+!services/microService.js
+!services/sqlCommand.js
+obj 
+snap
+<<<<<<< HEAD
+.vs
+=======
+.vs
+>>>>>>> 419c8ab77962283a12819aece94cc727aeedf51a
+.vscode

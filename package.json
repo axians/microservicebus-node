@@ -1,0 +1,67 @@
+{
+  "author": {
+    "email": "microservicebus@axians.com",
+    "name": "microServiceBus.com",
+    "url": "https://microservicebus.com"
+  },
+  "bin": {
+    "startnode": "global.js",
+    "startsnap": "snapstart.js",
+    "restore": "restore.js"
+  },
+  "dependencies": {
+    "app-module-path": "^2.2.0",
+    "colors": "^1.1.2",
+    "compare-version": "^0.1.2",
+    "npm": "3.10.9",
+    "package-json": "^2.2.1",
+    "request": "^2.81.0",
+    "require-reload": "^0.2.2",
+    "uuid": "^2.0.3"
+  },
+  "description": "node.js node for microservicebus. Please visit http://microservicebus.com for more information.",
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "chai": "^3.5.0",
+    "grunt": "^1.0.1",
+    "grunt-cli": "1.2.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "gulp": "^3.9.0",
+    "gulp-scp2": "^0.2.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^2.5.3",
+    "mocha-jshint": "^2.2.5",
+    "should": "^11.1.1",
+    "supertest": "^1.2.0",
+    "unit.js": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=0.12.0 <7.3.1"
+  },
+  "keywords": [
+    "IoT",
+    "Micro Services",
+    "MicroServices",
+    "microServiceBus",
+    "Cloud",
+    "AZURE",
+    "AZURE IOT",
+    "AWS",
+    "AWS IOT",
+    "AXIANS",
+    "VINCI"
+  ],
+  "license": "MIT",
+  "main": "global.js",
+  "name": "microservicebus-node",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qbranch-code/microservicebus-node"
+  },
+  "scripts": {
+    "lint": "jshint Utils.js",
+    "succcess": "mocha Tests/unittests.js",
+    "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
+  },
+  "version": "0.0.4"
+}

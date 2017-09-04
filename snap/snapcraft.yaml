@@ -1,0 +1,41 @@
+﻿name: microservicebus-node
+version: '0.4' 
+summary: ....
+description: |
+  microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
+grade: devel 
+confinement: devmode 
+
+apps:
+  microservicebus-node:
+    command: bin/startsnap
+    daemon: simple
+    plugs:
+    - kernel-module-control
+    - hardware-observe
+    - serial-port
+    - home
+    - network
+    - network-bind
+    - modem-manager
+#environment:
+#  NODE_DEBUG: module
+
+parts:
+  node:
+    source: https://github.com/qbranch-code/microservicebus-node.git
+    source-branch: master
+    plugin: nodejs
+    node-engine: 7.10.0
+    build-packages: [python2.7, build-essential]
+    stage-packages: [python2.7, build-essential]
+    node-packages: [serialport]
+
+
+# sudo snap connect microservicebus-node:kernel-module-control core:kernel-module-control
+# sudo snap connect microservicebus-node:hardware-observe core:hardware-observe
+# sudo snap connect microservicebus-node:serial-port caracalla:ttys4
+
+# sudo snap connect microservicebus-daemon:kernel-module-control core:kernel-module-control
+# sudo snap connect microservicebus-daemon:hardware-observe core:hardware-observe
+# sudo snap connect microservicebus-daemon:serial-port caracalla:ttys4

@@ -23,7 +23,7 @@ apps:
 
 parts:
   node:
-	source:https://github.com/axians/microservicebus-node.git
+	source: https://github.com/axians/microservicebus-node.git
     source-branch: master
     plugin: nodejs
     node-engine: 7.10.0

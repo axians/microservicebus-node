@@ -1,5 +1,5 @@
 ﻿name: microservicebus-node
-version: '0.4' 
+version: '1.0' 
 summary: ....
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
@@ -23,7 +23,7 @@ apps:
 
 parts:
   node:
-    source: https://github.com/qbranch-code/microservicebus-node.git
+	source:https://github.com/axians/microservicebus-node.git
     source-branch: master
     plugin: nodejs
     node-engine: 7.10.0

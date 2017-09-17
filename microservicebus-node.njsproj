@@ -57,10 +57,12 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Compile Include="test\testData.js" />
-    <Content Include="snapcraft.yaml" />
+    <Content Include="snap\microservicebus-node_0.4_amd64.snap" />
+    <Content Include="snap\snapcraft.yaml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />
+    <Folder Include="snap\" />
     <Folder Include="test\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

@@ -57,7 +57,7 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Compile Include="test\testData.js" />
-    <Content Include="snap\microservicebus-node_0.4_amd64.snap" />
+    <Content Include="snap\microservicebus-node_1.0_amd64.snap" />
     <Content Include="snap\snapcraft.yaml" />
   </ItemGroup>
   <ItemGroup>

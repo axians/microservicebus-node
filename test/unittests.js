@@ -7,10 +7,11 @@ var express = require('express');
 var should = require('should');
 var util = require('../lib/Utils.js');
 var fs = require('fs');
-const SCRIPTFOLDER = "/../node_modules/microservicebus-core/lib/services/";
-var MicroServiceBusHost = require("../lib/microServiceBusHost.js");
+const SCRIPTFOLDER = "../node_modules/microservicebus-core/lib/services/";
+var MicroServiceBusHost = require("../node_modules/microservicebus-core/lib/microServiceBusHost.js");
 
-process.env.organizationid = "65b22e1f-a17e-432f-b9f2-b7057423a786";
+
+var org = process.env.organizationid;
 
 var settings;
 var loggedInComplete1;

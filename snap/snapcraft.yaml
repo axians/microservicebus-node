@@ -1,5 +1,5 @@
 ﻿name: microservicebus-node
-version: '1.0' 
+version: '1.3' 
 summary: ....
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
@@ -18,17 +18,33 @@ apps:
     - network
     - network-bind
     - modem-manager
+
 #environment:
-#  NODE_DEBUG: module
+#    NODE_PATH: $NODE_PATH:/root/snap/microservicebus-node/x1/node_modules;/snap/microservicebus-node/x1/lib/node_modules;/snap/microservicebus-node/x1/lib/node_modules
+#    PATH: $PATH:$SNAP/usr/bin
+#    PYTHON: $SNAP/usr/bin/python2.7
+#    CPLUS_INCLUDE_PATH: $SNAP/usr/include:$SNAP/usr/include/x86_64-linux-gnu
+#    C_INCLUDE_PATH: $SNAP/usr/include:$SNAP/usr/include/x86_64-linux-gnu
+#    LD_LIBRARY_PATH: $SNAP/usr/lib/x86_64-linux-gnu
+#    NODE_PATH: $NODE_PATH:$SNAP/lib/node_modules
+
+#    NODE_DEBUG: module
+#   $PATH: /snap/microservicebus-node/x1/usr/bin
+#   PYTHON: /snap/microservicebus-node/x1/usr/bin/python2.7
+#   CPLUS_INCLUDE_PATH: /snap/microservicebus-node/x1/usr/include
 
 parts:
   node:
-	source: https://github.com/axians/microservicebus-node.git
+    source: https://github.com/axians/microservicebus-node.git
     source-branch: master
     plugin: nodejs
     node-engine: 7.10.0
-    build-packages: [python2.7, build-essential]
-    stage-packages: [python2.7, build-essential]
+    build-packages:
+    - python2.7
+    - build-essential
+    stage-packages:
+    - python2.7
+    - build-essential
     node-packages: [serialport]
 
 

@@ -5,8 +5,9 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>microservicebus-node</Name>
     <RootNamespace>microservicebus.host</RootNamespace>
-    <ScriptArguments>
-    </ScriptArguments>
+    <ScriptArguments>-c 4ZG6KCVA -n Matilda</ScriptArguments>
+    <NodeExePath>
+    </NodeExePath>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>

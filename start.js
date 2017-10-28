@@ -248,15 +248,16 @@ function start(d) {
                 console.log(util.padRight(" Current version: " + version + ". New version: " + latest, maxWidth, ' ').bgGreen.white.bold);
                 console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
                 console.log();
-                //console.log("Start installing core".bgRed.white);
                 
-                util.addNpmPackage("microservicebus-core@latest", true, function (err) {
+                var corePkg = isBeta ? "microservicebus-core@beta" : "microservicebus-core@latest";
+                
+                util.addNpmPackage(corePkg, true, function (err) {
                     if (err) {
                         console.log("Unable to install core update".bgRed.white);
                         console.log("Error: " + err);
                     }
                     else {
-                        console.log("Core installed successfully".bgRed.white);
+                        console.log("Core installed successfully".bgGreen.white);
 
                         var MicroServiceBusHost = require("microservicebus-core").Host;
                         var microServiceBusHost = new MicroServiceBusHost(settingsHelper);

@@ -5,17 +5,19 @@ var assert = require('assert');
 var request = require('supertest');
 var express = require('express');
 var should = require('should');
-var util = require('../lib/Utils.js');
+var path = require('path');
 var fs = require('fs');
-const SCRIPTFOLDER = "/../node_modules/microservicebus-core/lib/services/";
-var MicroServiceBusHost = require("../lib/microServiceBusHost.js");
-
-process.env.organizationid = "65b22e1f-a17e-432f-b9f2-b7057423a786";
+const SCRIPTFOLDER = "../node_modules/microservicebus-core/lib/services/";
+var MicroServiceBusHost = require("../node_modules/microservicebus-core/lib/microServiceBusHost.js");
+var util = require('../lib/Utils.js');
+var SettingsHelper = require("../lib/SettingsHelper.js")
+var settingsHelper = new SettingsHelper();
+var org = process.env.organizationid;
 
 var settings;
 var loggedInComplete1;
 var microServiceBusHost;
-
+        
 describe('Util functions', function () {
     
     it('padRight should work', function (done) {
@@ -116,12 +118,14 @@ describe('Sign in', function () {
             "sas": "SharedAccessSignature sr=65b22e1f-a17e-432f-b9f2-b7057423a786&sig=cYPoYlPns7ukMYf2qHx1TotEJqTe3%2bMXV7fHyqTF2zI%3d&se=1802530260&skn=TestNode1",
             "port": 9090
         };
-        util.saveSettings(settings);
+        settingsHelper.settings = settings;
+        settingsHelper.save();
+        //util.saveSettings(settings);
         done();
     });
     it('Create microServiceBusHost should work', function (done) {
         loggedInComplete1 = false;
-        microServiceBusHost = new MicroServiceBusHost(settings);
+        microServiceBusHost = new MicroServiceBusHost(settingsHelper);
         expect(microServiceBusHost).to.not.be.null;
         done();
     });
@@ -161,7 +165,8 @@ describe('Sign in', function () {
 });
 describe('Post Signin', function () {
     it('azureApiAppInboundService.js should exist after login', function (done) {
-        var ret = fs.statSync(__dirname + SCRIPTFOLDER + "azureApiAppInboundService.js");
+        var filePath = path.resolve(__dirname, SCRIPTFOLDER, "azureApiAppInboundService.js");
+        var ret = fs.statSync(filePath);
         ret.should.be.type('object');
 
         done();
@@ -224,7 +229,9 @@ describe('Post Signin', function () {
             });
     });
     it('javascriptaction.js should exist after calling service', function (done) {
-        var ret = fs.statSync(__dirname + SCRIPTFOLDER + "javascriptaction.js");
+        var filePath = path.resolve(__dirname, SCRIPTFOLDER, "javascriptaction.js");
+
+        var ret = fs.statSync(filePath);
         ret.should.be.type('object');
         done();
     });
@@ -260,11 +267,13 @@ describe('Wrong Signin', function ()  {
             "trackMemoryUsage": 0,
             "enableKeyPress": false
         }
-        util.saveSettings(settings);
+        settingsHelper = new SettingsHelper();
+        settingsHelper.settings = settings;
+        settingsHelper.save();
         done();
     });
     it('Create microServiceBusHost should work', function (done) {
-         microServiceBusHost = new MicroServiceBusHost(settings);
+         microServiceBusHost = new MicroServiceBusHost(settingsHelper);
         expect(microServiceBusHost).to.not.be.null;
         done();
     });

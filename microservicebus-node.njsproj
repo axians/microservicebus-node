@@ -5,8 +5,9 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>microservicebus-node</Name>
     <RootNamespace>microservicebus.host</RootNamespace>
-    <ScriptArguments>
-    </ScriptArguments>
+    <ScriptArguments>-c 4ZG6KCVA -n Matilda</ScriptArguments>
+    <NodeExePath>
+    </NodeExePath>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -57,7 +58,7 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Compile Include="test\testData.js" />
-    <Content Include="snap\microservicebus-node_0.4_amd64.snap" />
+    <Content Include="snap\microservicebus-node_1.0_amd64.snap" />
     <Content Include="snap\snapcraft.yaml" />
   </ItemGroup>
   <ItemGroup>

@@ -62,7 +62,10 @@ function startWithoutDebug() {
 
         cluster.on('exit', function (worker, code, signal) {
             worker = cluster.fork();
+
+            var debugMessage = "signal: " + signal + " code: " + code;
             console.log(util.padRight(" EXIT CALLED", maxWidth, ' ').bgGreen.white.bold);
+            console.log(debugMessage.bgGreen.white.bold);
             if (cluster.settings.execArgv.find(function (e) { return e.startsWith('--debug'); }) !== undefined) {
 
                 console.log();
@@ -229,7 +232,13 @@ function start(d) {
                 corePjson = require(packageFile);
             }
 
+            var isBeta = args.find(function (a) {
+                return a === "--beta";
+            });
             var latest = rawData['dist-tags'].latest;
+
+            if (isBeta)
+                latest = rawData['dist-tags'].beta;
 
             if (corePjson === undefined || util.compareVersion(corePjson.version, latest) < 0) {
                 var version = corePjson === undefined ? "NONE" : corePjson.version;
@@ -239,15 +248,16 @@ function start(d) {
                 console.log(util.padRight(" Current version: " + version + ". New version: " + latest, maxWidth, ' ').bgGreen.white.bold);
                 console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
                 console.log();
-                //console.log("Start installing core".bgRed.white);
                 
-                util.addNpmPackage("microservicebus-core@latest", true, function (err) {
+                var corePkg = isBeta ? "microservicebus-core@beta" : "microservicebus-core@latest";
+                
+                util.addNpmPackage(corePkg, true, function (err) {
                     if (err) {
                         console.log("Unable to install core update".bgRed.white);
                         console.log("Error: " + err);
                     }
                     else {
-                        console.log("Core installed successfully".bgRed.white);
+                        console.log("Core installed successfully".bgGreen.white);
 
                         var MicroServiceBusHost = require("microservicebus-core").Host;
                         var microServiceBusHost = new MicroServiceBusHost(settingsHelper);

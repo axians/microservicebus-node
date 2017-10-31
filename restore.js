@@ -25,7 +25,7 @@ SOFTWARE.
 var fs = require('fs');
 var util = require('./lib//Utils.js');
 var pjson = require('./package.json');
-var site = "wss://microservicebus.com";
+var site  = process.env["MSBHUBURI"] ? "wss://" + process.env["MSBHUBURI"] : "wss://microservicebus.com";
 require('colors');
 
 var args = process.argv.slice(2);

@@ -33,7 +33,7 @@ describe('Util functions', function () {
         done();
     });
     it('addNpmPackage (msbcam) should work', function (done) {
-        this.timeout(10000);
+        this.timeout(30000);
         util.addNpmPackage("msbcam", true, function (err) {
             expect(err).to.equal(null);   
             done();

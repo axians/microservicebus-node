@@ -25,9 +25,5 @@ coverage
 !services/sqlCommand.js
 obj 
 snap
-<<<<<<< HEAD
-.vs
-=======
-.vs
->>>>>>> 419c8ab77962283a12819aece94cc727aeedf51a
 .vscode
+package-lock.json

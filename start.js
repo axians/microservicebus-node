@@ -207,13 +207,10 @@ function start(testFlag) {
                         console.log('leaving interval');
                     }
                     else{
-                        console.log('retying...');                
+                        console.log('retrying...');                
                     }
                 })
             },10000);
-        }
-        else{
-            console.log("we're good");                
         }
     })
 
@@ -223,7 +220,6 @@ function start(testFlag) {
             function (callback) { // Check version of microservicebus-node
                 checkVersion("microservicebus-node")
                     .then(function (rawData) {
-                        console.log("AFTER checkVersion")
                         var latest = rawData['dist-tags'].latest;
                         if (util.compareVersion(pjson.version, latest) < 0) {
                             console.log();

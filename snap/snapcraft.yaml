@@ -1,5 +1,5 @@
 ﻿name: microservicebus-node
-version: '1.3' 
+version: '1.5' 
 summary: ....
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
@@ -10,6 +10,7 @@ apps:
   microservicebus-node:
     command: bin/startsnap
     daemon: simple
+    restart-condition: always
     plugs:
     - kernel-module-control
     - hardware-observe
@@ -19,7 +20,24 @@ apps:
     - network-bind
     - modem-manager
 
-#environment:
+apps:
+  start:
+    command: bin/startsnap
+    plugs:
+    - kernel-module-control
+    - hardware-observe
+    - serial-port
+    - home
+    - network
+    - network-bind
+    - modem-manager
+
+environment:
+  CPLUS_INCLUDE_PATH: $SNAP/usr/include:$SNAP/usr/include/x86_64-linux-gnu
+  C_INCLUDE_PATH: $SNAP/usr/include:$SNAP/usr/include/x86_64-linux-gnu
+  LD_LIBRARY_PATH: $SNAP/usr/lib/x86_64-linux-gnu
+  PATH: $PATH:$SNAP/usr/bin
+  PYTHON: $SNAP/usr/bin/python2.7
 #    NODE_PATH: $NODE_PATH:/root/snap/microservicebus-node/x1/node_modules;/snap/microservicebus-node/x1/lib/node_modules;/snap/microservicebus-node/x1/lib/node_modules
 #    PATH: $PATH:$SNAP/usr/bin
 #    PYTHON: $SNAP/usr/bin/python2.7

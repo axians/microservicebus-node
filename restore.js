@@ -49,7 +49,7 @@ if (args.length > 0) {
             console.log("Setting host to localhost".green);
             break;
         case '-stage':
-            site = "wss://microservicebus-northeurope-stage.azurewebsites.net";
+            site = "wss://stage.microservicebus.com";
             console.log("Setting host to stage".green);
             break;
 

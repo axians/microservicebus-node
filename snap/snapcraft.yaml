@@ -1,5 +1,5 @@
 ﻿name: microservicebus-node
-version: '1.5' 
+version: '1.6' 
 summary: ....
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
@@ -11,18 +11,6 @@ apps:
     command: bin/startsnap
     daemon: simple
     restart-condition: always
-    plugs:
-    - kernel-module-control
-    - hardware-observe
-    - serial-port
-    - home
-    - network
-    - network-bind
-    - modem-manager
-
-apps:
-  start:
-    command: bin/startsnap
     plugs:
     - kernel-module-control
     - hardware-observe
@@ -64,6 +52,14 @@ parts:
     - python2.7
     - build-essential
     node-packages: [serialport]
+    stage:
+      - -usr/lib/x86_64-linux-gnu/libc.so
+      - -usr/lib/x86_64-linux-gnu/libm.so
+      - -usr/lib/x86_64-linux-gnu/libpthread.so
+
+  libhack:
+    source: ./libhack
+    plugin: dump
 
 
 # sudo snap connect microservicebus-node:kernel-module-control core:kernel-module-control

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "app-module-path": "^2.2.0",
+    "async": "^2.6.0",
     "colors": "^1.1.2",
     "compare-version": "^0.1.2",
     "npm": "5.5.1",
@@ -64,5 +65,5 @@
     "succcess": "mocha Tests/unittests.js",
     "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
   },
-  "version": "1.0.4"
+  "version": "1.0.5"
 }

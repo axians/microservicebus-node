@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+
+// DEBUG
+//process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 var path = require("path");
 var os = require('os');
 var url = require('url');
@@ -89,6 +93,7 @@ function SnapLoginHandler(settingsHelper) {
     }
 
     function tryGetIMEI(callback) {
+        
         exec("sudo mmcli -m 0|grep -oE \"imei: '(.*)'\"|sed 's/imei: //g'|sed \"s/'//g\"", function (error, stdout, stderr) {
             console.log('STARTSNAP: imei: ' + stdout);
             if (error !== null) {
@@ -113,6 +118,14 @@ function SnapLoginHandler(settingsHelper) {
                 console.error("STARTSNAP: ERROR: error: " + err);
                 callback();
                 return;
+            }
+            else if(response.statusCode === 302){
+                settingsHelper.settings.hubUri = "wss://" + url.parse(response.headers.location).host;
+                console.log('REDIRECTED TO: ' + settingsHelper.settings.hubUri);
+                settingsHelper.save()
+                callback();
+                return;
+                
             }
             else if (response.statusCode !== 200) {
                 console.error("STARTSNAP: FAILED: response: " + response.statusCode);

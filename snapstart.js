@@ -122,6 +122,9 @@ function SnapLoginHandler(settingsHelper) {
             else if(response.statusCode === 302){
                 settingsHelper.settings.hubUri = "wss://" + url.parse(response.headers.location).host;
                 console.log('REDIRECTED TO: ' + settingsHelper.settings.hubUri);
+                settingsHelper.save()
+                callback();
+                return;
                 
             }
             else if (response.statusCode !== 200) {

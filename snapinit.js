@@ -25,6 +25,7 @@ SnapInitHandler.start(settingsHelper.isFirstStart());
 
 function SnapInitHandler(settingsHelper) {
     console.log("STARTSNAP: SnapInitHandler started");
+    console.dir(process.env); // DEBUG
     
     var self = this;
     this.interval = null;

@@ -25,7 +25,6 @@ SnapInitHandler.start(settingsHelper.isFirstStart());
 
 function SnapInitHandler(settingsHelper) {
     console.log("STARTSNAP: SnapInitHandler started");
-    console.dir(process.env); // DEBUG
     
     var self = this;
     this.interval = null;
@@ -33,8 +32,7 @@ function SnapInitHandler(settingsHelper) {
         const argv = require('minimist')(process.argv.slice(2));
     
         const cOrNSupplied = (argv.c || argv.n)
-        const cAndNSupplied = (argv.c && argv.n)
-        
+
         if(!isFirstStart) {
             console.log('Stored data/settings for node exist.');
             // let's skip the confirmation dialog if the process argument '-y' is supplied.
@@ -47,7 +45,7 @@ function SnapInitHandler(settingsHelper) {
                 });
 
                 if(!cOrNSupplied) {
-                    console.warn("No '-c' (code) or '-n' node name argument specified. Only removing node data & settings.")
+                    console.warn("No '-c' (code) or '-n' (node name) argument specified. Only removing node data & settings.")
                 }
         
                 rl.question('Are you sure you want to remove all previous data and settings for mSB node? [yes/no] ', (answer) => {
@@ -87,7 +85,6 @@ function SnapInitHandler(settingsHelper) {
                     
         // let's simulate the 'restore.js -all' command.
         process.argv = [ process.argv[0], process.argv[1], '-all'];
-        console.log(JSON.stringify(process.argv));
         require('./restore.js');
 
         // restore argv's send to the snap.

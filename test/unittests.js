@@ -9,7 +9,7 @@ var path = require('path');
 var fs = require('fs');
 const SCRIPTFOLDER = "../node_modules/microservicebus-core/lib/services/";
 var MicroServiceBusHost = require("../node_modules/microservicebus-core/lib/microServiceBusHost.js");
-var util = require('../lib/Utils.js');
+var util = require("../node_modules/microservicebus-core/lib/utils.js");
 var SettingsHelper = require("../lib/SettingsHelper.js")
 var settingsHelper = new SettingsHelper();
 var org = process.env.organizationid;
@@ -17,7 +17,7 @@ var org = process.env.organizationid;
 var settings;
 var loggedInComplete1;
 var microServiceBusHost;
-        
+
 describe('Util functions', function () {
     
     it('padRight should work', function (done) {
@@ -39,13 +39,6 @@ describe('Util functions', function () {
             done();
         });
     });
-    // it('addNpmPackage (microservicebus-core) should work', function (done) {
-    //     this.timeout(30000);
-    //     util.addNpmPackage("microservicebus-core", true, function (err) {
-    //         expect(err).to.equal(null);   
-    //         done();
-    //     });
-    // });
     it('removeNpmPackage (msbcam) should work', function (done) {
         this.timeout(10000);
         util.removeNpmPackage("msbcam", function (err) {

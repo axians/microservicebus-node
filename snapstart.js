@@ -94,9 +94,9 @@ function SnapLoginHandler(settingsHelper) {
 
     function tryGetIMEI(callback) {
         
-        exec("sudo mmcli -m 0|grep -oE \"imei: '(.*)'\"|sed 's/imei: //g'|sed \"s/'//g\"", function (error, stdout, stderr) {
+        exec("sudo -A mmcli -m 0|grep -oE \"imei: '(.*)'\"|sed 's/imei: //g'|sed \"s/'//g\"", function (error, stdout, stderr) {
             console.log('STARTSNAP: imei: ' + stdout);
-            if (error !== null) {
+            if (!error) {
                 console.log("STARTSNAP: Unable to get the IMEI id");
                 console.log('STARTSNAP: ERROR: ' + error);
 

@@ -19,6 +19,16 @@ apps:
     - network
     - network-bind
     - modem-manager
+  init:
+    command: bin/initsnap
+    plugs:
+    - kernel-module-control
+    - hardware-observe
+    - serial-port
+    - home
+    - network
+    - network-bind
+    - modem-manager
 
 environment:
   CPLUS_INCLUDE_PATH: $SNAP/usr/include:$SNAP/usr/include/x86_64-linux-gnu

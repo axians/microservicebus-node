@@ -7,6 +7,7 @@
   "bin": {
     "startnode": "global.js",
     "startsnap": "snapstart.js",
+    "initsnap": "snapinit.js",
     "restore": "restore.js"
   },
   "dependencies": {
@@ -14,6 +15,7 @@
     "async": "^2.6.0",
     "colors": "^1.1.2",
     "compare-version": "^0.1.2",
+    "minimist": "^1.2.0",
     "npm": "5.5.1",
     "package-json": "^2.2.1",
     "request": "^2.81.0",
@@ -21,7 +23,7 @@
     "tar": "^4.0.2",
     "uuid": "^2.0.3"
   },
-  "description": "node.js node for microservicebus. Please visit http://microservicebus.com for more information.",
+  "description": "node.js node for microservicebus. Please visit https://microservicebus.com for more information.",
   "devDependencies": {
     "assert": "^1.4.1",
     "chai": "^3.5.0",
@@ -58,7 +60,7 @@
   "name": "microservicebus-node",
   "repository": {
     "type": "git",
-    "url": "https://github.com/qbranch-code/microservicebus-node"
+    "url": "https://github.com/axians/microservicebus-node"
   },
   "scripts": {
     "lint": "jshint Utils.js",

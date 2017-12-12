@@ -66,10 +66,13 @@ function startWithoutDebug() {
         cluster.on('exit', function (worker, code, signal) {
             worker = cluster.fork();
 
-            var debugMessage = "signal: " + signal + " code: " + code;
-            console.log(util.padRight(" EXIT CALLED", maxWidth, ' ').bgGreen.white.bold);
-            console.log(debugMessage.bgGreen.white.bold);
-            if (cluster.settings.execArgv.find(function (e) { return e.startsWith('--debug'); }) !== undefined) {
+            // var debugMessage = "signal: " + signal + " code: " + code;
+            // console.log(util.padRight(" EXIT CALLED", maxWidth, ' ').bgGreen.white.bold);
+            // console.log(debugMessage.bgGreen.white.bold);
+            if(code===99){ // Controlled exit
+                process.exit(0);
+            }
+            else if (cluster.settings.execArgv.find(function (e) { return e.startsWith('--debug'); }) !== undefined) {
 
                 console.log();
                 console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);

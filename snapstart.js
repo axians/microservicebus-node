@@ -66,7 +66,7 @@ function SnapLoginHandler(settingsHelper) {
                     }
                 })
             }
-        }, 2000);
+        }, 10000);
     }
     function pingBeforeStart (callback) {
         var hubUri = url.parse(settingsHelper.settings.hubUri);

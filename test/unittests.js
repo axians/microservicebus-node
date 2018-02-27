@@ -1,4 +1,5 @@
 ﻿'use strict'; /* global describe, it */
+
 var mocha = require('mocha');
 var expect = require('chai').expect;
 var assert = require('assert');
@@ -8,7 +9,8 @@ var should = require('should');
 var path = require('path');
 var fs = require('fs');
 const SCRIPTFOLDER = "../node_modules/microservicebus-core/lib/services/";
-var MicroServiceBusHost = require("../node_modules/microservicebus-core/lib/microServiceBusHost.js");
+var MicroServiceBusHost = require("../node_modules/microservicebus-core/lib/MicroServiceBusHost.js");
+//"C:\@GIT\axians\microservicebus-node\node_modules\microservicebus-core\lib\MicroServiceBusHost.js"
 var util = require("../node_modules/microservicebus-core/lib/utils.js");
 var SettingsHelper = require("../lib/SettingsHelper.js")
 var settingsHelper = new SettingsHelper();
@@ -34,7 +36,7 @@ describe('Util functions', function () {
     });
     it('addNpmPackage (msbcam) should work', function (done) {
         this.timeout(10000);
-        util.addNpmPackage("msbcam", true, function (err) {
+        util.addNpmPackage("msbcam", function (err) {
             expect(err).to.equal(null);   
             done();
         });
@@ -97,25 +99,25 @@ describe('Check configuration', function () {
     });
 });
 describe('Sign in', function () {
-    it('Save settings should work', function (done) {
-        settings = {
-            "hubUri": "wss://microservicebus.com",
-            "trackMemoryUsage": 0,
-            "enableKeyPress": false,
-            "useEncryption": false,
-            "log": "",
-            "nodeName": "TestNode1",
-            "organizationId": process.env.organizationid,
-            "machineName": "DESKTOP-JPUK8UG",
-            "id": "f3760331-1097-4507-ba26-6473576ce305",
-            "sas": "SharedAccessSignature sr=65b22e1f-a17e-432f-b9f2-b7057423a786&sig=cYPoYlPns7ukMYf2qHx1TotEJqTe3%2bMXV7fHyqTF2zI%3d&se=1802530260&skn=TestNode1",
-            "port": 9090
-        };
-        settingsHelper.settings = settings;
-        settingsHelper.save();
-        //util.saveSettings(settings);
-        done();
-    });
+    // it('Save settings should work', function (done) {
+    //     settings = {
+    //         "hubUri": "wss://microservicebus.com",
+    //         "trackMemoryUsage": 0,
+    //         "enableKeyPress": false,
+    //         "useEncryption": false,
+    //         "log": "",
+    //         "nodeName": "TestNode1",
+    //         "organizationId": process.env.organizationid,
+    //         "machineName": "DESKTOP-JPUK8UG",
+    //         "id": "f3760331-1097-4507-ba26-6473576ce305",
+    //         "sas": "SharedAccessSignature sr=65b22e1f-a17e-432f-b9f2-b7057423a786&sig=cYPoYlPns7ukMYf2qHx1TotEJqTe3%2bMXV7fHyqTF2zI%3d&se=1802530260&skn=TestNode1",
+    //         "port": 9090
+    //     };
+    //     settingsHelper.settings = settings;
+    //     settingsHelper.save();
+    //     //util.saveSettings(settings);
+    //     done();
+    // });
     it('Create microServiceBusHost should work', function (done) {
         loggedInComplete1 = false;
         microServiceBusHost = new MicroServiceBusHost(settingsHelper);

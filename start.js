@@ -299,7 +299,7 @@ function start(testFlag) {
                     })
                     .catch(function (err) {
                         callback(err);
-                    });;
+                    });
             }
         ], 
         function (err) { // Starting microServiceBusHost

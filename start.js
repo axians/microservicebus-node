@@ -33,6 +33,9 @@ var fs = require('fs');
 var os = require('os');
 var async = require('async');
 
+process.on('unhandledRejection', err => {
+    console.log("SERIOUS ERROR: Caught unhandledRejection", true);
+});
 var microServiceBusHost;
 var maxWidth = 75;
 var debugPort = 5859;
@@ -69,7 +72,7 @@ function startWithoutDebug() {
             // var debugMessage = "signal: " + signal + " code: " + code;
             // console.log(util.padRight(" EXIT CALLED", maxWidth, ' ').bgGreen.white.bold);
             // console.log(debugMessage.bgGreen.white.bold);
-            if(code===99){ // Controlled exit
+            if (code === 99) { // Controlled exit
                 process.exit(0);
             }
             else if (cluster.settings.execArgv.find(function (e) { return e.startsWith('--debug'); }) !== undefined) {
@@ -201,24 +204,24 @@ function start(testFlag) {
     console.log(util.padRight("", maxWidth, ' ').bgBlue.white.bold);
     console.log();
 
-    checkVersionsAndStart(function(err){
-        if(err){
-            var interval = setInterval(function(err){
-                checkVersionsAndStart(function(err){
-                    if(!err){
+    checkVersionsAndStart(function (err) {
+        if (err) {
+            var interval = setInterval(function (err) {
+                checkVersionsAndStart(function (err) {
+                    if (!err) {
                         clearInterval(interval);
                         console.log('leaving interval');
                     }
-                    else{
-                        console.log('retrying...');                
+                    else {
+                        console.log('retrying...');
                     }
-                })
-            },10000);
+                });
+            }, 10000);
         }
-    })
+    });
 
-    
-    function checkVersionsAndStart(done){
+
+    function checkVersionsAndStart(done) {
         async.waterfall([
             function (callback) { // Check version of microservicebus-node
                 checkVersion("microservicebus-node")
@@ -234,43 +237,52 @@ function start(testFlag) {
                             console.log();
                             callback();
                         }
-                        else{
+                        else {
                             callback();
                         }
                     })
                     .catch(function (err) {
                         callback(err);
-    
+
                     });
             },
             function (callback) { // Check version of microservicebus-core
-               
+
                 checkVersion("microservicebus-core")
                     .then(function (rawData) {
-    
-                        var path = require("path");
-                        var packageFile = path.resolve(rootFolder, 'node_modules/microservicebus-core/package.json');
-    
+
+                        let path = require("path");
+                        let packagePath;
+                        let packageFile;
+                        
                         // Check if node is started as Snap
                         if (process.argv[1].endsWith("startsnap")) {
                             //console.log("Loading microservicebus-core/package.json for snap");
                             packageFile = path.resolve(settingsHelper.nodePackagePath, 'microservicebus-core/package.json');
                         }
-    
+                        else{
+                            try{
+                                packagePath = require.resolve('microservicebus-core');
+                                packagePath = path.dirname(packagePath);
+                                packageFile = path.resolve(packagePath, 'package.json');
+                            }
+                            catch(e){}
+                        }
+
                         var corePjson;
-    
+
                         if (fs.existsSync(packageFile)) {
                             corePjson = require(packageFile);
                         }
-    
+
                         var isBeta = args.find(function (a) {
                             return a === "--beta";
                         });
                         var latest = rawData['dist-tags'].latest;
-    
+
                         if (isBeta)
                             latest = rawData['dist-tags'].beta;
-    
+
                         if (corePjson === undefined || util.compareVersion(corePjson.version, latest) < 0) {
                             var version = corePjson === undefined ? "NONE" : corePjson.version;
                             console.log();
@@ -279,9 +291,9 @@ function start(testFlag) {
                             console.log(util.padRight(" Current version: " + version + ". New version: " + latest, maxWidth, ' ').bgGreen.white.bold);
                             console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
                             console.log();
-    
+
                             var corePkg = isBeta ? "microservicebus-core@beta" : "microservicebus-core@latest";
-    
+
                             util.addNpmPackage(corePkg, true, function (err) {
                                 if (err) {
                                     console.log("Unable to install core update".bgRed.white);
@@ -301,32 +313,32 @@ function start(testFlag) {
                         callback(err);
                     });
             }
-        ], 
-        function (err) { // Starting microServiceBusHost
-            if(err){
-                console.log('ERROR: ' + err);
-                done(err);
-            }
-            else{
-                var MicroServiceBusHost = require("microservicebus-core").Host;
-                var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
-    
-                microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
-    
-                });
-                microServiceBusHost.OnStopped(function () {
-    
-                });
-                microServiceBusHost.OnUpdatedItineraryComplete(function () {
-    
-                });
-                microServiceBusHost.Start(testFlag);
-                done();
-            }
-            
-        });
+        ],
+            function (err) { // Starting microServiceBusHost
+                if (err) {
+                    console.log('ERROR: ' + err);
+                    done(err);
+                }
+                else {
+                    var MicroServiceBusHost = require("microservicebus-core").Host;
+                    var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
+
+                    microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
+
+                    });
+                    microServiceBusHost.OnStopped(function () {
+
+                    });
+                    microServiceBusHost.OnUpdatedItineraryComplete(function () {
+
+                    });
+                    microServiceBusHost.Start(testFlag);
+                    done();
+                }
+
+            });
     }
-    
+
 }
 
 

@@ -35,7 +35,8 @@ var settingsHelper = new SettingsHelper();
 
 if (args.length > 0) {
     switch (args[0]) {
- 
+
+        case '--all':
         case '-all':
             deleteFolderRecursive(settingsHelper.homeDirectory + '/microServiceBus.BizTalk');
             deleteFolderRecursive(settingsHelper.homeDirectory + '/data');
@@ -44,25 +45,41 @@ if (args.length > 0) {
             deleteFolderRecursive(settingsHelper.homeDirectory + '/cert');
             console.log("Deleted".green);
             break;
-        case '-debug':
+        case '--local':
+        case '-local':
             site = "wss://localhost:44302";
-            console.log("Setting host to localhost".green);
             break;
+        case '--dev':
+        case '-dev':
+            site = "wss://dev.microservicebus.com";
+            break;
+        case '--stage':
         case '-stage':
             site = "wss://stage.microservicebus.com";
-            console.log("Setting host to stage".green);
             break;
-
+        case '--custom':
+        case '-custom':
+            if(!args[1]){
+                console.log("Missing portal uri Eg. MYORG.microservicebus.com".yellow);
+                return;
+            }
+            else if(args[1].startsWith('wss://')){
+                site = args[1];
+            }
+            else{
+                site = 'wss://' + args[1];
+            }
+            break;
         case '-?':
-            console.log("-all, -cert or -debug".yellow);
+            console.log("-all, -cert -local or -custom".yellow);
             return;
         default:
             console.log("Unsupported argument.".red);
-            console.log("-all, -cert or -debug".yellow);
+            console.log("-all, -cert -local or -custom".yellow);
             return;
     }
 }
-
+console.log("Setting host to ".green + site.grey);
 // Update settings
 
 settingsHelper.settings = {

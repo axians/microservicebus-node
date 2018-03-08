@@ -310,6 +310,7 @@ function start(testFlag) {
                         }
                     })
                     .catch(function (err) {
+                        console.log('ERROR: ' + err)
                         callback(err);
                     });
             }

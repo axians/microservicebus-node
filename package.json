@@ -42,7 +42,7 @@
     "unit.js": "^2.0.0"
   },
   "engines": {
-    "node": ">=0.12.0 <7.3.1"
+    "node": ">=0.12.0 <7.10.2"
   },
   "keywords": [
     "IoT",
@@ -69,5 +69,5 @@
     "succcess": "mocha Tests/unittests.js",
     "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
   },
-  "version": "1.0.14"
+  "version": "1.0.15"
 }

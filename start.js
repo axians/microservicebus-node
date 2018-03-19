@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/* jshint node: true */
+/* jshint esversion: 6 */
+/* jshint strict:false */
 'use strict';
 
 require('colors');
@@ -254,19 +257,19 @@ function start(testFlag) {
                         let path = require("path");
                         let packagePath;
                         let packageFile;
-                        
+
                         // Check if node is started as Snap
                         if (process.argv[1].endsWith("startsnap")) {
                             //console.log("Loading microservicebus-core/package.json for snap");
                             packageFile = path.resolve(settingsHelper.nodePackagePath, 'microservicebus-core/package.json');
                         }
-                        else{
-                            try{
+                        else {
+                            try {
                                 packagePath = require.resolve('microservicebus-core');
                                 packagePath = path.dirname(packagePath);
                                 packageFile = path.resolve(packagePath, 'package.json');
                             }
-                            catch(e){}
+                            catch (e) { }
                         }
 
                         var corePjson;
@@ -310,7 +313,7 @@ function start(testFlag) {
                         }
                     })
                     .catch(function (err) {
-                        console.log('ERROR: ' + err)
+                        console.log('ERROR: ' + err);
                         callback(err);
                     });
             }

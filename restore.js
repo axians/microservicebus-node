@@ -21,7 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
+/* jshint node: true */
+/* jshint esversion: 6 */
+/* jshint strict:false */
+'use strict';
 var fs = require('fs');
 var util = require('./lib//Utils.js');
 var pjson = require('./package.json');
@@ -57,8 +60,7 @@ if (args.length > 0) {
         case '-stage':
             site = "wss://stage.microservicebus.com";
             break;
-        case '--custom':
-        case '-custom':
+        case '-env':
             if(!args[1]){
                 console.log("Missing portal uri Eg. MYORG.microservicebus.com".yellow);
                 return;
@@ -88,7 +90,7 @@ settingsHelper.settings = {
     "enableKeyPress": false,
     "useEncryption": false,
     "log": ""
-}
+};
 settingsHelper.save();
 console.log("Settings updated".green);
 console.log();
@@ -108,4 +110,4 @@ function deleteFolderRecursive(path) {
         });
         fs.rmdirSync(path);
     }
-};
+}

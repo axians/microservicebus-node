@@ -37,7 +37,7 @@ var os = require('os');
 var async = require('async');
 
 process.on('unhandledRejection', err => {
-    console.log("SERIOUS ERROR: Caught unhandledRejection. %o", err);
+    console.log("SERIOUS ERROR: Caught unhandledRejection. ", err);
 });
 var microServiceBusHost;
 var maxWidth = 75;

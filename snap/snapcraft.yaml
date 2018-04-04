@@ -33,7 +33,8 @@ apps:
     - raw-usb # custom usb device access
     - serial-port # access to /dev/tty{USB,ACM,AMA,etc}*
     - shutdown # reboot, shutdown
-    - snapd-control # ability to refresh, revert, snaps via mSB
+#    - snapd-control # ability to refresh, revert, snaps via mSB
+# To be added later when snapd management implemented in mSB.com.
     - spi # access to SPI bus
     - system-observe # disk-, memory-, process command line args, etc.
     - tpm # TPM module access

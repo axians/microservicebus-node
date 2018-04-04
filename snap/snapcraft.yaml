@@ -1,10 +1,10 @@
 ﻿name: microservicebus-node
-version: '1.11' 
-summary: ....
+version: '1.12'
+summary: microServiceBus - IoT Device Management
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
-grade: devel 
-confinement: devmode 
+grade: stable
+confinement: strict
 
 apps:
   microservicebus-node:
@@ -12,19 +12,34 @@ apps:
     daemon: simple
     restart-condition: always
     plugs:
-    - kernel-module-control
-    - hardware-observe
-    - serial-port
-    - home
-    - network
-    - network-bind
-    - modem-manager
+    - alsa # sound devices
+    - bluetooth-control # bluetooth
+    - bluez # bluetooth
+    - firewall-control # firewallw/iptables
+    - gpio # GPIO access via /sys/class/gpio/*
+    - gpio-memory-control # GPIO access via /dev/gpiomem
+    - hardware-observe # access connected HW devices/peripherals
+    - home # ability to store logs, etc. in user's home folder.
+    - i2c # access to i2c sensors
+    - iio # access to sensors via iio interface.
+    - location-control # GPS/location access
+    - log-observe # ability to retrieve syslogs, if requested by end-user.
+    - modem-manager # access to modem info/control, like mmcli.
+    - network # network client support
+    - network-bind # network server support
+    - network-manager # access to network configs, ability to toggle e.g. fallback connections, etc. 
+    - network-observe # access to ping, arp tables, etc. for remote network troubleshooting
+    - pulseaudio # UGLY work-around for access to syscall 'setgroups (116)'
+    - raw-usb # custom usb device access
+    - serial-port # access to /dev/tty{USB,ACM,AMA,etc}*
+    - shutdown # reboot, shutdown
+    - snapd-control # ability to refresh, revert, snaps via mSB
+    - spi # access to SPI bus
+    - system-observe # disk-, memory-, process command line args, etc.
+    - tpm # TPM module access
   init:
     command: bin/initsnap
     plugs:
-    - kernel-module-control
-    - hardware-observe
-    - serial-port
     - home
     - network
     - network-bind
@@ -36,23 +51,14 @@ environment:
   LD_LIBRARY_PATH: $SNAP/usr/lib/x86_64-linux-gnu
   PATH: $PATH:$SNAP/usr/bin
   PYTHON: $SNAP/usr/bin/python2.7
-#    NODE_PATH: $NODE_PATH:/root/snap/microservicebus-node/x1/node_modules;/snap/microservicebus-node/x1/lib/node_modules;/snap/microservicebus-node/x1/lib/node_modules
-#    PATH: $PATH:$SNAP/usr/bin
-#    PYTHON: $SNAP/usr/bin/python2.7
-#    CPLUS_INCLUDE_PATH: $SNAP/usr/include:$SNAP/usr/include/x86_64-linux-gnu
-#    C_INCLUDE_PATH: $SNAP/usr/include:$SNAP/usr/include/x86_64-linux-gnu
-#    LD_LIBRARY_PATH: $SNAP/usr/lib/x86_64-linux-gnu
-#    NODE_PATH: $NODE_PATH:$SNAP/lib/node_modules
-
-#    NODE_DEBUG: module
-#   $PATH: /snap/microservicebus-node/x1/usr/bin
-#   PYTHON: /snap/microservicebus-node/x1/usr/bin/python2.7
-#   CPLUS_INCLUDE_PATH: /snap/microservicebus-node/x1/usr/include
+  NODE_PATH: $SNAP_USER_DATA/node_modules
+  NPM_CONFIG_CACHE: $SNAP_USER_DATA
 
 parts:
   node:
     source: https://github.com/axians/microservicebus-node.git
-    source-branch: master
+    # source-branch: master
+    source-branch: feature/snap-strict
     plugin: nodejs
     node-engine: 7.10.0
     build-packages:
@@ -61,6 +67,8 @@ parts:
     stage-packages:
     - python2.7
     - build-essential
+    - libdb-dev
+    - modemmanager
     node-packages: [serialport]
     stage:
       - -usr/lib/x86_64-linux-gnu/libc.so
@@ -70,12 +78,3 @@ parts:
   libhack:
     source: ./libhack
     plugin: dump
-
-
-# sudo snap connect microservicebus-node:kernel-module-control core:kernel-module-control
-# sudo snap connect microservicebus-node:hardware-observe core:hardware-observe
-# sudo snap connect microservicebus-node:serial-port caracalla:ttys4
-
-# sudo snap connect microservicebus-daemon:kernel-module-control core:kernel-module-control
-# sudo snap connect microservicebus-daemon:hardware-observe core:hardware-observe
-# sudo snap connect microservicebus-daemon:serial-port caracalla:ttys4

@@ -28,13 +28,6 @@ var snapLoginHandler = new SnapLoginHandler(settingsHelper);
 
 snapLoginHandler.start(settingsHelper.isFirstStart());
 
-//if (settingsHelper.isFirstStart()) {    
-//    snapLoginHandler.start();
-//}
-//else {
-//    snapLoginHandler.start();
-//}
-
 function SnapLoginHandler(settingsHelper) {
     console.log("STARTSNAP: SnapLoginHandler started");
     var self = this;

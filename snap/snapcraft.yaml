@@ -58,8 +58,7 @@ environment:
 parts:
   node:
     source: https://github.com/axians/microservicebus-node.git
-    # source-branch: master
-    source-branch: feature/snap-strict
+    source-branch: master
     plugin: nodejs
     node-engine: 7.10.0
     build-packages:
@@ -70,6 +69,7 @@ parts:
     - build-essential
     - libdb-dev
     - modemmanager
+    - vim
     node-packages: [serialport]
     stage:
       - -usr/lib/x86_64-linux-gnu/libc.so

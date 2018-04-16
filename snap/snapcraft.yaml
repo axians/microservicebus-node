@@ -1,10 +1,16 @@
-﻿name: microservicebus-node
-version: '1.12'
+name: microservicebus-node
+version: '1.13'
 summary: microServiceBus - IoT Device Management
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
 grade: stable
 confinement: strict
+
+plugs:
+  dbus-plug:
+    interface: dbus
+    bus: system
+    name: org.freedesktop.ModemManager1
 
 apps:
   microservicebus-node:
@@ -15,6 +21,7 @@ apps:
     - alsa # sound devices
     - bluetooth-control # bluetooth
     - bluez # bluetooth
+    - dbus-plug
     - firewall-control # firewallw/iptables
     - gpio # GPIO access via /sys/class/gpio/*
     - gpio-memory-control # GPIO access via /dev/gpiomem
@@ -42,6 +49,7 @@ apps:
     command: bin/initsnap
     plugs:
     - home
+    - dbus-plug
     - network
     - network-bind
     - modem-manager
@@ -78,4 +86,14 @@ parts:
 
   libhack:
     source: ./libhack
-    plugin: dump
+# To enable ICCID login:
+# snap connect microservicebus-node:modem-manager modem-manager:service
+
+# Other special purpose plugs:
+# sudo snap connect microservicebus-node:kernel-module-control core:kernel-module-control
+# sudo snap connect microservicebus-node:hardware-observe core:hardware-observe
+# sudo snap connect microservicebus-node:serial-port caracalla:ttys4
+
+# sudo snap connect microservicebus-daemon:kernel-module-control core:kernel-module-control
+# sudo snap connect microservicebus-daemon:hardware-observe core:hardware-observe
+# sudo snap connect microservicebus-daemon:serial-port caracalla:ttys4

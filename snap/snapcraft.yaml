@@ -86,8 +86,6 @@ parts:
 
   libhack:
     source: ./libhack
-    plugin: dump
-
 # To enable ICCID login:
 # snap connect microservicebus-node:modem-manager modem-manager:service
 

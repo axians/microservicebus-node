@@ -60,9 +60,10 @@ if (args.length > 0) {
         case '-stage':
             site = "wss://stage.microservicebus.com";
             break;
+        case '--env':
         case '-env':
             if(!args[1]){
-                console.log("Missing portal uri Eg. MYORG.microservicebus.com".yellow);
+                console.log("Missing portal URI/host address. E.g. 'contoso.microservicebus.com'".yellow);
                 return;
             }
             else if(args[1].startsWith('wss://')){

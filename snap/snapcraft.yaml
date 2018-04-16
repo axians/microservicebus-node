@@ -60,7 +60,7 @@ environment:
   LD_LIBRARY_PATH: $SNAP/usr/lib/x86_64-linux-gnu
   PATH: $PATH:$SNAP/usr/bin
   PYTHON: $SNAP/usr/bin/python2.7
-  NODE_PATH: $SNAP_USER_DATA/node_modules
+  NODE_PATH: $SNAP/lib/node_modules:$SNAP_USER_DATA/node_modules
   NPM_CONFIG_CACHE: $SNAP_USER_DATA
 
 parts:

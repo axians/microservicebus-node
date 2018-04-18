@@ -86,7 +86,9 @@ parts:
       - -usr/lib/x86_64-linux-gnu/libpthread.so
 
   libhack:
+    plugin: dump
     source: ./libhack
+
 # To enable ICCID login:
 # snap connect microservicebus-node:modem-manager modem-manager:service
 

@@ -1,5 +1,5 @@
 name: microservicebus-node
-version: '1.13'
+version: '1.14'
 summary: microServiceBus - IoT Device Management
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
@@ -21,7 +21,7 @@ apps:
     - alsa # sound devices
     - bluetooth-control # bluetooth
     - bluez # bluetooth
-    - dbus-plug
+    - dbus-plug # ModemManager access
     - firewall-control # firewallw/iptables
     - gpio # GPIO access via /sys/class/gpio/*
     - gpio-memory-control # GPIO access via /dev/gpiomem
@@ -62,6 +62,7 @@ environment:
   PYTHON: $SNAP/usr/bin/python2.7
   NODE_PATH: $SNAP/lib/node_modules:$SNAP_USER_DATA/node_modules
   NPM_CONFIG_CACHE: $SNAP_USER_DATA
+  GYP_CONFIG_DIR: $SNAP_USER_DATA/.gyp
 
 parts:
   node:

@@ -66,8 +66,7 @@ environment:
 
 parts:
   node:
-    source: https://github.com/axians/microservicebus-node.git
-    source-branch: master
+    source: ../
     plugin: nodejs
     node-engine: 7.10.0
     build-packages:

@@ -63,6 +63,9 @@ environment:
   NODE_PATH: $SNAP/lib/node_modules:$SNAP_USER_DATA/node_modules
   NPM_CONFIG_CACHE: $SNAP_USER_DATA
   GYP_CONFIG_DIR: $SNAP_USER_DATA/.gyp
+  MSB_NODEPATH: $SNAP_USER_DATA/dummy
+  HOME: $SNAP_USER_DATA
+  NPM_CONFIG_DEVDIR: $SNAP_USER_DATA/.gyp
 
 parts:
   node:
@@ -78,7 +81,7 @@ parts:
     - libdb-dev
     - modemmanager
     - vim
-    node-packages: [serialport]
+    node-packages: [serialport,node-mbus]
     stage:
       - -usr/lib/x86_64-linux-gnu/libc.so
       - -usr/lib/x86_64-linux-gnu/libm.so

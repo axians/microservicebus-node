@@ -67,10 +67,10 @@ function startWithoutDebug() {
     var debugHost;
     var fixedExecArgv = [];
     if (cluster.isMaster) {
-        var worker = cluster.fork();
+        var worker = cluster.fork(process.env);
 
         cluster.on('exit', function (worker, code, signal) {
-            worker = cluster.fork();
+            worker = cluster.fork(process.env);
 
             // var debugMessage = "signal: " + signal + " code: " + code;
             // console.log(util.padRight(" EXIT CALLED", maxWidth, ' ').bgGreen.white.bold);

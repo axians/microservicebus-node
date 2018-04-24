@@ -11,15 +11,8 @@ plugs:
     interface: dbus
     bus: system
     name: org.freedesktop.ModemManager1
-  serial-acm0:
+  serial-port:
     interface: serial-port
-    path: /dev/ttyACM0
-  serial-ama0:
-    interface: serial-port
-    path: /dev/ttyAMA0
-  serial-usb0:
-    interface: serial-port
-    path: /dev/ttyUSB0
 
 apps:
   microservicebus-node:

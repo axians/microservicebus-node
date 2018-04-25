@@ -21,7 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
+/* jshint node: true */
+/* jshint esversion: 6 */
+/* jshint strict:false */
+'use strict';
 var fs = require('fs');
 var util = require('./lib//Utils.js');
 var pjson = require('./package.json');
@@ -35,7 +38,8 @@ var settingsHelper = new SettingsHelper();
 
 if (args.length > 0) {
     switch (args[0]) {
- 
+
+        case '--all':
         case '-all':
             deleteFolderRecursive(settingsHelper.homeDirectory + '/microServiceBus.BizTalk');
             deleteFolderRecursive(settingsHelper.homeDirectory + '/data');
@@ -44,25 +48,41 @@ if (args.length > 0) {
             deleteFolderRecursive(settingsHelper.homeDirectory + '/cert');
             console.log("Deleted".green);
             break;
-        case '-debug':
+        case '--local':
+        case '-local':
             site = "wss://localhost:44302";
-            console.log("Setting host to localhost".green);
             break;
+        case '--dev':
+        case '-dev':
+            site = "wss://dev.microservicebus.com";
+            break;
+        case '--stage':
         case '-stage':
             site = "wss://stage.microservicebus.com";
-            console.log("Setting host to stage".green);
             break;
-
+        case '--env':
+        case '-env':
+            if(!args[1]){
+                console.log("Missing portal URI/host address. E.g. 'contoso.microservicebus.com'".yellow);
+                return;
+            }
+            else if(args[1].startsWith('wss://')){
+                site = args[1];
+            }
+            else{
+                site = 'wss://' + args[1];
+            }
+            break;
         case '-?':
-            console.log("-all, -cert or -debug".yellow);
+            console.log("-all, -cert -local or -custom".yellow);
             return;
         default:
             console.log("Unsupported argument.".red);
-            console.log("-all, -cert or -debug".yellow);
+            console.log("-all, -cert -local or -custom".yellow);
             return;
     }
 }
-
+console.log("Setting host to ".green + site.grey);
 // Update settings
 
 settingsHelper.settings = {
@@ -71,7 +91,7 @@ settingsHelper.settings = {
     "enableKeyPress": false,
     "useEncryption": false,
     "log": ""
-}
+};
 settingsHelper.save();
 console.log("Settings updated".green);
 console.log();
@@ -91,4 +111,4 @@ function deleteFolderRecursive(path) {
         });
         fs.rmdirSync(path);
     }
-};
+}

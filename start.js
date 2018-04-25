@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/* jshint node: true */
+/* jshint esversion: 6 */
+/* jshint strict:false */
 'use strict';
 
 require('colors');
@@ -32,17 +35,27 @@ var npm = require('npm');
 var fs = require('fs');
 var os = require('os');
 var async = require('async');
+let network = require('network');
 
+
+process.on('unhandledRejection', err => {
+    console.log("SERIOUS ERROR: Caught unhandledRejection. ", err);
+});
+var _ipAddress;
 var microServiceBusHost;
 var maxWidth = 75;
-var debugPort = 5859;
+var debugPort = 9230;
 var debug = process.execArgv.find(function (e) { return e.startsWith('--debug'); }) !== undefined;
 var rootFolder = process.arch == 'mipsel' ? '/mnt/sda1' : __dirname;
 var args = process.argv.slice(1);
 
 if (debug)
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
+else{
+    network.get_active_interface(function (err, nw) {
+        _ipAddress = nw.ip_address;
+    });
+}
 // Load settings 
 var SettingsHelper = require("./lib/SettingsHelper.js");
 var settingsHelper = new SettingsHelper();
@@ -58,21 +71,18 @@ else {
 function startWithoutDebug() {
     var cluster = require('cluster');
 
-    var debugHost;
     var fixedExecArgv = [];
     if (cluster.isMaster) {
-        var worker = cluster.fork();
+        var worker = cluster.fork(process.env);
 
         cluster.on('exit', function (worker, code, signal) {
-            worker = cluster.fork();
+            worker = cluster.fork(process.env);
 
-            // var debugMessage = "signal: " + signal + " code: " + code;
-            // console.log(util.padRight(" EXIT CALLED", maxWidth, ' ').bgGreen.white.bold);
-            // console.log(debugMessage.bgGreen.white.bold);
-            if(code===99){ // Controlled exit
+            console.log('CODE:' + code.bgGreen.white.bold);
+            if (code === 99) { // Controlled exit
                 process.exit(0);
             }
-            else if (cluster.settings.execArgv.find(function (e) { return e.startsWith('--debug'); }) !== undefined) {
+            else if (cluster.settings.execArgv.find(function (e) { return e.startsWith('--inspect'); }) !== undefined) {
 
                 console.log();
                 console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
@@ -80,84 +90,38 @@ function startWithoutDebug() {
                 console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
                 console.log();
 
-                debugHost.Start(debugPort);
-                debugPort++;
             }
             else {
                 console.log();
                 console.log(util.padRight(" NORMAL START", maxWidth, ' ').bgGreen.white.bold);
                 console.log();
-
-                debugHost = undefined;
             }
         });
 
-        cluster.on('message', function (msg) {
+        cluster.on('message', function (worker, message, handle) {
             try {
-                console.log(util.padRight(" MESSAGE CALLED", maxWidth, ' ').bgGreen.white.bold);
+               
+                console.log(util.padRight(" MESSAGE CALLED:" + JSON.stringify(message) + ".", maxWidth, ' ').bgGreen.white.bold);
 
-                if (debugHost == undefined) {
-                    fixedExecArgv.push('--debug-brk');
+                if (message.cmd === 'START-DEBUG') {
+                    
+                    fixedExecArgv.push('--inspect=' + _ipAddress + ':' + debugPort);
 
                     cluster.setupMaster({
                         execArgv: fixedExecArgv
                     });
 
-                    // We loose out env settings on dropping the cluster node
-                    if (settingsHelper.isRunningAsSnap) {
-                        var packagePath = settingsHelper.nodePackagePath;
-
-                        process.env.NODE_PATH = packagePath;
-                        process.env.HOME = os.userInfo().homedir;
-
-                        require('app-module-path').addPath(packagePath);
-                        require('module').globalPaths.push(packagePath);
-
-                        require('module')._initPaths();
-                    }
-
-                    console.log("Require DebugHost");
-                    try {
-                        var DebugHost = require("microservicebus-core").DebugHost;
-                        console.log("Require DebugHost done");
-                    }
-                    catch (error) {
-                        console.log("ERROR: Unable to require DebugHost");
-                        console.log(error);
-
-                    }
-
-                    debugHost = new DebugHost(settingsHelper);
-                    debugHost.OnReady(function () {
-
-                    });
-                    debugHost.OnStopped(function () {
-                        console.log(util.padRight(" OnStop process triggered", maxWidth, ' ').bgGreen.white.bold);
-                        cluster.setupMaster({
-                            execArgv: []
-                        });
-                        debugHost = undefined;
-
-                        for (var id in cluster.workers) {
-                            console.log(util.padRight(" Killing", maxWidth, ' ').bgGreen.white.bold);
-                            cluster.workers[id].process.disconnect();
-                            cluster.workers[id].process.kill('SIGTERM');
-                        }
-                    });
                 }
                 else {
-                    debugHost.Stop(function () {
-                        cluster.setupMaster({
-                            execArgv: []
-                        });
-                        for (var id in cluster.workers) {
-                            console.log(util.padRight(" Killing", maxWidth, ' ').bgGreen.white.bold);
-                            cluster.workers[id].process.disconnect();
-                            cluster.workers[id].process.kill('SIGTERM');
-                        }
-
+                    
+                    cluster.setupMaster({
+                        execArgv: []
                     });
-
+                    for (var id in cluster.workers) {
+                        console.log(util.padRight(" Killing", maxWidth, ' ').bgGreen.white.bold);
+                        cluster.workers[id].process.disconnect();
+                        cluster.workers[id].process.kill('SIGTERM');
+                    }
                 }
             }
             catch (gerr) {
@@ -172,7 +136,7 @@ function startWithoutDebug() {
     }
     process.on('uncaughtException', function (err) {
         if (err.errno === 'ECONNREFUSED') {
-            debugHost = undefined;
+
             for (var id in cluster.workers) {
                 console.log(util.padRight(" Killing", maxWidth, ' ').bgRed.white.bold);
                 cluster.workers[id].process.disconnect();
@@ -201,24 +165,24 @@ function start(testFlag) {
     console.log(util.padRight("", maxWidth, ' ').bgBlue.white.bold);
     console.log();
 
-    checkVersionsAndStart(function(err){
-        if(err){
-            var interval = setInterval(function(err){
-                checkVersionsAndStart(function(err){
-                    if(!err){
+    checkVersionsAndStart(function (err) {
+        if (err) {
+            var interval = setInterval(function (err) {
+                checkVersionsAndStart(function (err) {
+                    if (!err) {
                         clearInterval(interval);
                         console.log('leaving interval');
                     }
-                    else{
-                        console.log('retrying...');                
+                    else {
+                        console.log('retrying...');
                     }
-                })
-            },10000);
+                });
+            }, 10000);
         }
-    })
+    });
 
-    
-    function checkVersionsAndStart(done){
+
+    function checkVersionsAndStart(done) {
         async.waterfall([
             function (callback) { // Check version of microservicebus-node
                 checkVersion("microservicebus-node")
@@ -234,43 +198,52 @@ function start(testFlag) {
                             console.log();
                             callback();
                         }
-                        else{
+                        else {
                             callback();
                         }
                     })
                     .catch(function (err) {
                         callback(err);
-    
+
                     });
             },
             function (callback) { // Check version of microservicebus-core
-               
+
                 checkVersion("microservicebus-core")
                     .then(function (rawData) {
-    
-                        var path = require("path");
-                        var packageFile = path.resolve(rootFolder, 'node_modules/microservicebus-core/package.json');
-    
+
+                        let path = require("path");
+                        let packagePath;
+                        let packageFile;
+
                         // Check if node is started as Snap
                         if (process.argv[1].endsWith("startsnap")) {
                             //console.log("Loading microservicebus-core/package.json for snap");
                             packageFile = path.resolve(settingsHelper.nodePackagePath, 'microservicebus-core/package.json');
                         }
-    
+                        else {
+                            try {
+                                packagePath = require.resolve('microservicebus-core');
+                                packagePath = path.dirname(packagePath);
+                                packageFile = path.resolve(packagePath, 'package.json');
+                            }
+                            catch (e) { }
+                        }
+
                         var corePjson;
-    
+
                         if (fs.existsSync(packageFile)) {
                             corePjson = require(packageFile);
                         }
-    
+
                         var isBeta = args.find(function (a) {
                             return a === "--beta";
                         });
                         var latest = rawData['dist-tags'].latest;
-    
+
                         if (isBeta)
                             latest = rawData['dist-tags'].beta;
-    
+
                         if (corePjson === undefined || util.compareVersion(corePjson.version, latest) < 0) {
                             var version = corePjson === undefined ? "NONE" : corePjson.version;
                             console.log();
@@ -279,9 +252,9 @@ function start(testFlag) {
                             console.log(util.padRight(" Current version: " + version + ". New version: " + latest, maxWidth, ' ').bgGreen.white.bold);
                             console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
                             console.log();
-    
+
                             var corePkg = isBeta ? "microservicebus-core@beta" : "microservicebus-core@latest";
-    
+
                             util.addNpmPackage(corePkg, true, function (err) {
                                 if (err) {
                                     console.log("Unable to install core update".bgRed.white);
@@ -298,35 +271,36 @@ function start(testFlag) {
                         }
                     })
                     .catch(function (err) {
+                        console.log('ERROR: ' + err);
                         callback(err);
                     });
             }
-        ], 
-        function (err) { // Starting microServiceBusHost
-            if(err){
-                console.log('ERROR: ' + err);
-                done(err);
-            }
-            else{
-                var MicroServiceBusHost = require("microservicebus-core").Host;
-                var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
-    
-                microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
-    
-                });
-                microServiceBusHost.OnStopped(function () {
-    
-                });
-                microServiceBusHost.OnUpdatedItineraryComplete(function () {
-    
-                });
-                microServiceBusHost.Start(testFlag);
-                done();
-            }
-            
-        });
+        ],
+            function (err) { // Starting microServiceBusHost
+                if (err) {
+                    console.log('ERROR: ' + err);
+                    done(err);
+                }
+                else {
+                    var MicroServiceBusHost = require("microservicebus-core").Host;
+                    var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
+
+                    microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
+
+                    });
+                    microServiceBusHost.OnStopped(function () {
+
+                    });
+                    microServiceBusHost.OnUpdatedItineraryComplete(function () {
+
+                    });
+                    microServiceBusHost.Start(testFlag);
+                    done();
+                }
+
+            });
     }
-    
+
 }
 
 

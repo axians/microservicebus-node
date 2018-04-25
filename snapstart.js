@@ -28,13 +28,6 @@ var snapLoginHandler = new SnapLoginHandler(settingsHelper);
 
 snapLoginHandler.start(settingsHelper.isFirstStart());
 
-//if (settingsHelper.isFirstStart()) {    
-//    snapLoginHandler.start();
-//}
-//else {
-//    snapLoginHandler.start();
-//}
-
 function SnapLoginHandler(settingsHelper) {
     console.log("STARTSNAP: SnapLoginHandler started");
     var self = this;
@@ -94,7 +87,7 @@ function SnapLoginHandler(settingsHelper) {
 
     function tryGetIMEI(callback) {
         
-        exec("sudo -A mmcli -m 0|grep -oE \"imei: '(.*)'\"|sed 's/imei: //g'|sed \"s/'//g\"", function (error, stdout, stderr) {
+        exec("mmcli -m 0|grep -oE \"imei: '(.*)'\"|sed 's/imei: //g'|sed \"s/'//g\"", function (error, stdout, stderr) {
             console.log('STARTSNAP: imei: ' + stdout);
             if (error) {
                 console.log("STARTSNAP: Unable to get the IMEI id");

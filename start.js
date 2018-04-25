@@ -35,20 +35,27 @@ var npm = require('npm');
 var fs = require('fs');
 var os = require('os');
 var async = require('async');
+let network = require('network');
+
 
 process.on('unhandledRejection', err => {
     console.log("SERIOUS ERROR: Caught unhandledRejection. ", err);
 });
+var _ipAddress;
 var microServiceBusHost;
 var maxWidth = 75;
-var debugPort = 5859;
+var debugPort = 9230;
 var debug = process.execArgv.find(function (e) { return e.startsWith('--debug'); }) !== undefined;
 var rootFolder = process.arch == 'mipsel' ? '/mnt/sda1' : __dirname;
 var args = process.argv.slice(1);
 
 if (debug)
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
+else{
+    network.get_active_interface(function (err, nw) {
+        _ipAddress = nw.ip_address;
+    });
+}
 // Load settings 
 var SettingsHelper = require("./lib/SettingsHelper.js");
 var settingsHelper = new SettingsHelper();
@@ -64,7 +71,6 @@ else {
 function startWithoutDebug() {
     var cluster = require('cluster');
 
-    var debugHost;
     var fixedExecArgv = [];
     if (cluster.isMaster) {
         var worker = cluster.fork(process.env);
@@ -72,13 +78,11 @@ function startWithoutDebug() {
         cluster.on('exit', function (worker, code, signal) {
             worker = cluster.fork(process.env);
 
-            // var debugMessage = "signal: " + signal + " code: " + code;
-            // console.log(util.padRight(" EXIT CALLED", maxWidth, ' ').bgGreen.white.bold);
-            // console.log(debugMessage.bgGreen.white.bold);
+            console.log('CODE:' + code.bgGreen.white.bold);
             if (code === 99) { // Controlled exit
                 process.exit(0);
             }
-            else if (cluster.settings.execArgv.find(function (e) { return e.startsWith('--debug'); }) !== undefined) {
+            else if (cluster.settings.execArgv.find(function (e) { return e.startsWith('--inspect'); }) !== undefined) {
 
                 console.log();
                 console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
@@ -86,84 +90,38 @@ function startWithoutDebug() {
                 console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
                 console.log();
 
-                debugHost.Start(debugPort);
-                debugPort++;
             }
             else {
                 console.log();
                 console.log(util.padRight(" NORMAL START", maxWidth, ' ').bgGreen.white.bold);
                 console.log();
-
-                debugHost = undefined;
             }
         });
 
-        cluster.on('message', function (msg) {
+        cluster.on('message', function (worker, message, handle) {
             try {
-                console.log(util.padRight(" MESSAGE CALLED", maxWidth, ' ').bgGreen.white.bold);
+               
+                console.log(util.padRight(" MESSAGE CALLED:" + JSON.stringify(message) + ".", maxWidth, ' ').bgGreen.white.bold);
 
-                if (debugHost == undefined) {
-                    fixedExecArgv.push('--debug-brk');
+                if (message.cmd === 'START-DEBUG') {
+                    
+                    fixedExecArgv.push('--inspect=' + _ipAddress + ':' + debugPort);
 
                     cluster.setupMaster({
                         execArgv: fixedExecArgv
                     });
 
-                    // We loose out env settings on dropping the cluster node
-                    if (settingsHelper.isRunningAsSnap) {
-                        var packagePath = settingsHelper.nodePackagePath;
-
-                        process.env.NODE_PATH = packagePath;
-                        process.env.HOME = os.userInfo().homedir;
-
-                        require('app-module-path').addPath(packagePath);
-                        require('module').globalPaths.push(packagePath);
-
-                        require('module')._initPaths();
-                    }
-
-                    console.log("Require DebugHost");
-                    try {
-                        var DebugHost = require("microservicebus-core").DebugHost;
-                        console.log("Require DebugHost done");
-                    }
-                    catch (error) {
-                        console.log("ERROR: Unable to require DebugHost");
-                        console.log(error);
-
-                    }
-
-                    debugHost = new DebugHost(settingsHelper);
-                    debugHost.OnReady(function () {
-
-                    });
-                    debugHost.OnStopped(function () {
-                        console.log(util.padRight(" OnStop process triggered", maxWidth, ' ').bgGreen.white.bold);
-                        cluster.setupMaster({
-                            execArgv: []
-                        });
-                        debugHost = undefined;
-
-                        for (var id in cluster.workers) {
-                            console.log(util.padRight(" Killing", maxWidth, ' ').bgGreen.white.bold);
-                            cluster.workers[id].process.disconnect();
-                            cluster.workers[id].process.kill('SIGTERM');
-                        }
-                    });
                 }
                 else {
-                    debugHost.Stop(function () {
-                        cluster.setupMaster({
-                            execArgv: []
-                        });
-                        for (var id in cluster.workers) {
-                            console.log(util.padRight(" Killing", maxWidth, ' ').bgGreen.white.bold);
-                            cluster.workers[id].process.disconnect();
-                            cluster.workers[id].process.kill('SIGTERM');
-                        }
-
+                    
+                    cluster.setupMaster({
+                        execArgv: []
                     });
-
+                    for (var id in cluster.workers) {
+                        console.log(util.padRight(" Killing", maxWidth, ' ').bgGreen.white.bold);
+                        cluster.workers[id].process.disconnect();
+                        cluster.workers[id].process.kill('SIGTERM');
+                    }
                 }
             }
             catch (gerr) {
@@ -178,7 +136,7 @@ function startWithoutDebug() {
     }
     process.on('uncaughtException', function (err) {
         if (err.errno === 'ECONNREFUSED') {
-            debugHost = undefined;
+
             for (var id in cluster.workers) {
                 console.log(util.padRight(" Killing", maxWidth, ' ').bgRed.white.bold);
                 cluster.workers[id].process.disconnect();

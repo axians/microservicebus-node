@@ -65,7 +65,7 @@ environment:
   PATH: $PATH:$SNAP/usr/bin
   PYTHON: $SNAP/usr/bin/python2.7
   NODE_PATH: $SNAP/lib/node_modules:$SNAP_USER_DATA/node_modules
-  NPM_CONFIG_CACHE: $SNAP_USER_DATA
+  NPM_CONFIG_CACHE: $SNAP_USER_DATA/.npm
   GYP_CONFIG_DIR: $SNAP_USER_DATA/.gyp
   MSB_NODEPATH: $SNAP_USER_DATA/dummy
   HOME: $SNAP_USER_DATA

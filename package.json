@@ -11,17 +11,17 @@
     "restore": "restore.js"
   },
   "dependencies": {
-    "app-module-path": "^2.2.0",
-    "async": "^2.6.0",
-    "colors": "^1.1.2",
-    "compare-version": "^0.1.2",
-    "minimist": "^1.2.0",
-    "npm": "5.5.1",
-    "package-json": "^2.2.1",
-    "request": "^2.81.0",
-    "require-reload": "^0.2.2",
-    "tar": "^4.0.2",
-    "uuid": "^2.0.3"
+    "app-module-path": "2.2.0",
+    "async": "2.6.0",
+    "colors": "1.1.2",
+    "compare-version": "0.1.2",
+    "minimist": "1.2.0",
+    "npm": "6.0.0",
+    "package-json": "2.2.0",
+    "request": "2.85.0",
+    "require-reload": "0.2.2",
+    "tar": "4.4.1",
+    "uuid": "2.0.3"
   },
   "description": "node.js node for microservicebus. Please visit https://microservicebus.com for more information.",
   "devDependencies": {

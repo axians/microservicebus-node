@@ -1,18 +1,23 @@
-﻿'use strict'; /* global describe, it */
+﻿
+/* jshint node: true */
+/* jshint esversion: 6 */
+/* jshint strict:false */
+'use strict'; /* global describe, it */
 
+var path = require('path');
+var initialArgs = process.argv[1];
+process.argv[1] = path.resolve(__dirname, "../start.js");
 var mocha = require('mocha');
 var expect = require('chai').expect;
 var assert = require('assert');
 var request = require('supertest');
 var express = require('express');
 var should = require('should');
-var path = require('path');
 var fs = require('fs');
-const SCRIPTFOLDER = "../node_modules/microservicebus-core/lib/services/";
-var MicroServiceBusHost = require("../node_modules/microservicebus-core/lib/MicroServiceBusHost.js");
-//"C:\@GIT\axians\microservicebus-node\node_modules\microservicebus-core\lib\MicroServiceBusHost.js"
+var SCRIPTFOLDER = path.resolve(process.env.HOME, "microServiceBus/services");
 var util = require("../node_modules/microservicebus-core/lib/utils.js");
-var SettingsHelper = require("../lib/SettingsHelper.js")
+var MicroServiceBusHost = require("../node_modules/microservicebus-core/lib/MicroServiceBusHost.js");
+var SettingsHelper = require("../lib/SettingsHelper.js");
 var settingsHelper = new SettingsHelper();
 var org = process.env.organizationid;
 
@@ -35,17 +40,9 @@ describe('Util functions', function () {
         done();
     });
     it('addNpmPackage (msbcam) should work', function (done) {
-        this.timeout(10000);
+        this.timeout(30000);
         util.addNpmPackage("msbcam", function (err) {
             expect(err).to.equal(null);   
-            done();
-        });
-    });
-    it('removeNpmPackage (msbcam) should work', function (done) {
-        this.timeout(10000);
-        util.removeNpmPackage("msbcam", function (err) {
-            if (err)
-                throw err;
             done();
         });
     });
@@ -69,6 +66,7 @@ describe('Util functions', function () {
     });
     
 });
+
 describe('Encryption/Decryption', function () {
     var dataToEncrypt = "Some data";
     var encryptedBuffer;
@@ -90,6 +88,7 @@ describe('Encryption/Decryption', function () {
         done();
     });
 });
+
 describe('Check configuration', function () {
     it('ENV organizationId should be set', function (done) {
         var orgId = process.env.organizationId;
@@ -98,27 +97,28 @@ describe('Check configuration', function () {
         done();
     });
 });
+
 describe('Sign in', function () {
-    // it('Save settings should work', function (done) {
-    //     settings = {
-    //         "hubUri": "wss://microservicebus.com",
-    //         "trackMemoryUsage": 0,
-    //         "enableKeyPress": false,
-    //         "useEncryption": false,
-    //         "log": "",
-    //         "nodeName": "TestNode1",
-    //         "organizationId": process.env.organizationid,
-    //         "machineName": "DESKTOP-JPUK8UG",
-    //         "id": "f3760331-1097-4507-ba26-6473576ce305",
-    //         "sas": "SharedAccessSignature sr=65b22e1f-a17e-432f-b9f2-b7057423a786&sig=cYPoYlPns7ukMYf2qHx1TotEJqTe3%2bMXV7fHyqTF2zI%3d&se=1802530260&skn=TestNode1",
-    //         "port": 9090
-    //     };
-    //     settingsHelper.settings = settings;
-    //     settingsHelper.save();
-    //     //util.saveSettings(settings);
-    //     done();
-    // });
-    it('Create microServiceBusHost should work', function (done) {
+    it('Save settings should work', function (done) {
+        settings = {
+            "hubUri": "wss://microservicebus.com",
+            "trackMemoryUsage": 0,
+            "enableKeyPress": false,
+            "useEncryption": false,
+            "log": "",
+            "nodeName": "TestNode1",
+            "organizationId": process.env.organizationid,
+            "machineName": "DESKTOP-JPUK8UG",
+            "id": "f3760331-1097-4507-ba26-6473576ce305",
+            "sas": "SharedAccessSignature sr=65b22e1f-a17e-432f-b9f2-b7057423a786&sig=Xn2U%2bDkDaIlv%2fQQCcPlVVn3r073KgcSY4NYIk5Y5WJk%3d&se=1840172863&skn=TestNode1",
+            "port": 9090
+        };
+        settingsHelper.settings = settings;
+        settingsHelper.save();
+        //util.saveSettings(settings);
+        done();
+    });
+    it('Create microServiceBus Node should work', function (done) {
         loggedInComplete1 = false;
         microServiceBusHost = new MicroServiceBusHost(settingsHelper);
         expect(microServiceBusHost).to.not.be.null;
@@ -158,9 +158,10 @@ describe('Sign in', function () {
         done();
     });
 });
+
 describe('Post Signin', function () {
     it('azureApiAppInboundService.js should exist after login', function (done) {
-        var filePath = path.resolve(__dirname, SCRIPTFOLDER, "azureApiAppInboundService.js");
+        var filePath = path.resolve(SCRIPTFOLDER, "azureApiAppInboundService.js");
         var ret = fs.statSync(filePath);
         ret.should.be.type('object');
 
@@ -254,70 +255,14 @@ describe('Post Signin', function () {
         done();
     });
 }); 
-describe('Wrong Signin', function ()  {
-    it('Restore settings should work', function (done) {
 
-        settings = {
-            "hubUri": "wss://microservicebus.com",
-            "trackMemoryUsage": 0,
-            "enableKeyPress": false
-        }
-        settingsHelper = new SettingsHelper();
-        settingsHelper.settings = settings;
-        settingsHelper.save();
-        done();
-    });
-    it('Create microServiceBusHost should work', function (done) {
-         microServiceBusHost = new MicroServiceBusHost(settingsHelper);
-        expect(microServiceBusHost).to.not.be.null;
-        done();
-    });
-    it('Sign in should not work', function (done) {
-        this.timeout(10000);
-        microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
-            expect(exceptionCount).to.eql(1);
-            expect(loadedCount).to.eql(0);
+describe('Clean up', function () {
+    
+    it('removeNpmPackage (msbcam) should work', function (done) {
+        this.timeout(30000);
+        util.removeNpmPackage("msbcam", function (err) {
+            expect(err).to.be.null;
             done();
         });
-        microServiceBusHost.OnStopped(function () {
-
-        });
-        microServiceBusHost.OnUpdatedItineraryComplete(function () {
-
-        });
-        try {
-            microServiceBusHost.Start(true);
-
-        }
-        catch (er) {
-            expect(err).to.be.null;
-            //done();process.argv
-        }
-    });
-    it('Sign in with to many arguments should not work', function (done) {
-        process.argv.push("a");
-        process.argv.push("b");
-        process.argv.push("c");
-
-        this.timeout(10000);
-        microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
-            expect(exceptionCount).to.eql(1);
-            expect(loadedCount).to.eql(0);
-            done();
-        });
-        microServiceBusHost.OnStopped(function () {
-
-        });
-        microServiceBusHost.OnUpdatedItineraryComplete(function () {
-
-        });
-        try {
-            microServiceBusHost.Start(true);
-
-        }
-        catch (er) {
-            expect(err).to.be.null;
-            //done();process.argv
-        }
     });
 });

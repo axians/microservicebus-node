@@ -19,8 +19,8 @@ var util = require("../node_modules/microservicebus-core/lib/utils.js");
 var MicroServiceBusHost = require("../node_modules/microservicebus-core/lib/MicroServiceBusHost.js");
 var SettingsHelper = require("../lib/SettingsHelper.js");
 var settingsHelper = new SettingsHelper();
-var org = process.env.organizationid;
-
+var orgId;
+var nodeKey;
 var settings;
 var loggedInComplete1;
 var microServiceBusHost;
@@ -91,8 +91,15 @@ describe('Encryption/Decryption', function () {
 
 describe('Check configuration', function () {
     it('ENV organizationId should be set', function (done) {
-        var orgId = process.env.organizationId;
+        orgId = process.env.organizationId;
+        nodeKey = process.env.nodeKey;
         expect(orgId).to.not.be.null;
+
+        done();
+    });
+    it('ENV nodeKey should be set', function (done) {
+        nodeKey = process.env.nodeKey;
+        expect(nodeKey).to.not.be.null;
 
         done();
     });
@@ -101,16 +108,16 @@ describe('Check configuration', function () {
 describe('Sign in', function () {
     it('Save settings should work', function (done) {
         settings = {
-            "hubUri": "wss://microservicebus.com",
+            "hubUri": "wss://stage.microservicebus.com",
             "trackMemoryUsage": 0,
             "enableKeyPress": false,
             "useEncryption": false,
             "log": "",
-            "nodeName": "TestNode1",
+            "nodeName": "unitTestNode1",
             "organizationId": process.env.organizationid,
-            "machineName": "DESKTOP-JPUK8UG",
-            "id": "f3760331-1097-4507-ba26-6473576ce305",
-            "sas": "SharedAccessSignature sr=65b22e1f-a17e-432f-b9f2-b7057423a786&sig=Xn2U%2bDkDaIlv%2fQQCcPlVVn3r073KgcSY4NYIk5Y5WJk%3d&se=1840172863&skn=TestNode1",
+            "machineName": "unitTestNode1",
+            "id": "644424d1-b591-4fd0-b7c2-29736b2f51ac",
+            "sas": process.env.nodeKey,
             "port": 9090
         };
         settingsHelper.settings = settings;
@@ -148,11 +155,13 @@ describe('Sign in', function () {
 
     });
     it('Ping should work', function (done) {
+        this.timeout(60000);
         var r = microServiceBusHost.TestOnPing("test");
         expect(r).to.equal(true);
         done();
     });
     it('Change Debug state should work', function (done) {
+        this.timeout(60000);
         var r = microServiceBusHost.TestOnChangeDebug(true);
         expect(r).to.equal(true);
         done();
@@ -241,23 +250,10 @@ describe('Post Signin', function () {
         TestOnChangeDebugResponse.should.equal(true);
         done();
     });
-    //it('update itinerary should work', function (done) {
-    //    this.timeout(10000);
-    //    var testData = require('./testData.js');
-    //    var updatedItinerary = testData.updateItinerary();
-    //    microServiceBusHost.OnUpdatedItineraryComplete(function () {
-    //        done();
-    //    });
-    //    var TestOnUpdateItineraryResponse = microServiceBusHost.TestOnUpdateItinerary(updatedItinerary);
-    //});
     it('change state should work', function (done) {
         var TestOnChangeDebugResponse = microServiceBusHost.TestOnChangeState("Stop");
         done();
     });
-}); 
-
-describe('Clean up', function () {
-    
     it('removeNpmPackage (msbcam) should work', function (done) {
         this.timeout(30000);
         util.removeNpmPackage("msbcam", function (err) {
@@ -265,4 +261,11 @@ describe('Clean up', function () {
             done();
         });
     });
-});
+    it('Sign out should work', function (done) {
+        //process.exit(99);
+        //microServiceBusHost.TestStop();
+        done();
+        setTimeout(function(){process.exit(99);},1000);
+    });
+}); 
+

@@ -13,9 +13,6 @@
   "dependencies": {
     "app-module-path": "2.2.0",
     "async": "2.6.0",
-    "azure-iot-common": "^1.5.0",
-    "azure-iot-device": "^1.4.0",
-    "azure-iot-device-mqtt": "^1.4.0",
     "colors": "1.1.2",
     "compare-version": "0.1.2",
     "diskusage": "^0.2.4",

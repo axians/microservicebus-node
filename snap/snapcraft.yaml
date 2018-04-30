@@ -87,6 +87,8 @@ parts:
       - -usr/lib/x86_64-linux-gnu/libc.so
       - -usr/lib/x86_64-linux-gnu/libm.so
       - -usr/lib/x86_64-linux-gnu/libpthread.so
+      - -usr/include/node/config.gypi
+      - -include/node/config.gypi
 
   libhack:
     plugin: dump

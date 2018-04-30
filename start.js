@@ -76,10 +76,12 @@ function startWithoutDebug() {
         var worker = cluster.fork(process.env);
 
         cluster.on('exit', function (worker, code, signal) {
+            console.log('Exit called. code:' + signal);
             worker = cluster.fork(process.env);
 
             console.log('CODE:' + code.bgGreen.white.bold);
             if (code === 99) { // Controlled exit
+                console.log("Controlled exit");
                 process.exit(0);
             }
             else if (cluster.settings.execArgv.find(function (e) { return e.startsWith('--inspect'); }) !== undefined) {
@@ -101,15 +103,20 @@ function startWithoutDebug() {
         cluster.on('message', function (worker, message, handle) {
             try {
                
-                console.log(util.padRight(" MESSAGE CALLED:" + JSON.stringify(message) + ".", maxWidth, ' ').bgGreen.white.bold);
+                //console.log(util.padRight(" MESSAGE CALLED:" + JSON.stringify(message) + ".", maxWidth, ' ').bgGreen.white.bold);
 
                 if (message.cmd === 'START-DEBUG') {
-                    
+                    console.log(util.padRight(" DEBUG MODE", maxWidth, ' ').bgGreen.white.bold);  
                     fixedExecArgv.push('--inspect=' + _ipAddress + ':' + debugPort);
 
                     cluster.setupMaster({
                         execArgv: fixedExecArgv
                     });
+
+                }
+                else if (message.cmd === 'SHUTDOWN') {
+                    
+                    process.exit(99);
 
                 }
                 else {

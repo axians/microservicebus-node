@@ -15,7 +15,6 @@
     "async": "2.6.0",
     "colors": "1.1.2",
     "compare-version": "0.1.2",
-    "diskusage": "^0.2.4",
     "minimist": "1.2.0",
     "msbcam": "0.0.1",
     "network": "0.4.1",
@@ -68,5 +67,5 @@
     "succcess": "mocha Tests/unittests.js",
     "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
   },
-  "version": "1.0.19"
+  "version": "1.0.20"
 }

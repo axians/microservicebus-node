@@ -225,7 +225,8 @@ function start(testFlag) {
 
                         // Check if node is started as Snap
                         if (process.argv[1].endsWith("startsnap")) {
-                            //console.log("Loading microservicebus-core/package.json for snap");
+                            console.log("Loading microservicebus-core/package.json for snap");
+                            console.log("nodePackagePath: " + settingsHelper.nodePackagePath)
                             packageFile = path.resolve(settingsHelper.nodePackagePath, 'microservicebus-core/package.json');
                         }
                         else {

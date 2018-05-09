@@ -35,6 +35,7 @@
     "microservicebus-core": "^1.1.58",
     "mocha": "5.1.1",
     "mocha-jshint": "^2.3.1",
+    "nyc": "11.7.1",
     "should": "13.2.1",
     "supertest": "3.0.0",
     "unit.js": "2.0.0"
@@ -62,10 +63,11 @@
     "type": "git",
     "url": "https://github.com/axians/microservicebus-node"
   },
+  "nyc_": {
+    "include": ["**/node_modules/"]
+  },
   "scripts": {
-    "lint": "jshint Utils.js",
-    "succcess": "mocha Tests/unittests.js",
-    "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
+    "test": "nyc --reporter=html --reporter=text mocha"
   },
   "version": "1.0.20"
 }

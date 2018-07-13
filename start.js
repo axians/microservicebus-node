@@ -41,6 +41,7 @@ let network = require('network');
 process.on('unhandledRejection', err => {
     console.log("SERIOUS ERROR: Caught unhandledRejection. ", err);
 });
+
 var _ipAddress;
 var microServiceBusHost;
 var maxWidth = 75;
@@ -51,7 +52,7 @@ var args = process.argv.slice(1);
 
 if (debug)
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-else{
+else {
     network.get_active_interface(function (err, nw) {
         _ipAddress = nw.ip_address;
     });
@@ -102,11 +103,11 @@ function startWithoutDebug() {
 
         cluster.on('message', function (worker, message, handle) {
             try {
-               
+
                 //console.log(util.padRight(" MESSAGE CALLED:" + JSON.stringify(message) + ".", maxWidth, ' ').bgGreen.white.bold);
 
                 if (message.cmd === 'START-DEBUG') {
-                    console.log(util.padRight(" DEBUG MODE", maxWidth, ' ').bgGreen.white.bold);  
+                    console.log(util.padRight(" DEBUG MODE", maxWidth, ' ').bgGreen.white.bold);
                     fixedExecArgv.push('--inspect=' + _ipAddress + ':' + debugPort);
 
                     cluster.setupMaster({
@@ -115,12 +116,12 @@ function startWithoutDebug() {
 
                 }
                 else if (message.cmd === 'SHUTDOWN') {
-                    
+
                     process.exit(99);
 
                 }
                 else {
-                    
+
                     cluster.setupMaster({
                         execArgv: []
                     });
@@ -181,7 +182,26 @@ function start(testFlag) {
                         console.log('leaving interval');
                     }
                     else {
-                        console.log('retrying...');
+                        if (err.code === "ECONNREFUSED" || err.code === "EACCES" || err.code === "ENOTFOUND") {
+                            clearInterval(interval);
+                            console.log('Starting in offline mode'.red);
+                            var MicroServiceBusHost = require("microservicebus-core").Host;
+                            var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
+
+                            microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
+
+                            });
+                            microServiceBusHost.OnStopped(function () {
+
+                            });
+                            microServiceBusHost.OnUpdatedItineraryComplete(function () {
+
+                            });
+                            microServiceBusHost.Start(testFlag);
+                        }
+                        else {
+                            console.log('retrying...');
+                        }
                     }
                 });
             }, 10000);
@@ -249,9 +269,11 @@ function start(testFlag) {
                         });
                         var latest = rawData['dist-tags'].latest;
 
-                        if (isBeta)
+                        if (isBeta) {
                             latest = rawData['dist-tags'].beta;
+                            console.log('RUNNING IN BETA MODE'.yellow);
 
+                        }
                         if (corePjson === undefined || util.compareVersion(corePjson.version, latest) < 0) {
                             var version = corePjson === undefined ? "NONE" : corePjson.version;
                             console.log();

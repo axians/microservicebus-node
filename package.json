@@ -8,15 +8,17 @@
     "startnode": "global.js",
     "startsnap": "snapstart.js",
     "initsnap": "snapinit.js",
-    "restore": "restore.js"
+    "restore": "restore.js",
+    "run": "start.js",
+    "beta": "runbeta.js"
   },
   "dependencies": {
     "app-module-path": "2.2.0",
     "async": "2.6.0",
     "colors": "1.1.2",
     "compare-version": "0.1.2",
+    "diskusage": "^0.2.4",
     "minimist": "1.2.0",
-    "msbcam": "0.0.1",
     "network": "0.4.1",
     "npm": "6.0.0",
     "package-json": "2.2.0",
@@ -32,7 +34,6 @@
     "chai": "4.1.2",
     "express": "4.16.3",
     "istanbul": "0.4.5",
-    "microservicebus-core": "^1.1.58",
     "mocha": "5.1.1",
     "mocha-jshint": "^2.3.1",
     "nyc": "11.7.1",
@@ -64,7 +65,9 @@
     "url": "https://github.com/axians/microservicebus-node"
   },
   "nyc_": {
-    "include": ["**/node_modules/"]
+    "include": [
+      "**/node_modules/"
+    ]
   },
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha"

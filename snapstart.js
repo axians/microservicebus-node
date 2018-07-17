@@ -49,7 +49,7 @@ function SnapLoginHandler(settingsHelper) {
                             });
                         }, 2000);
                     }
-                    else{
+                    else {
                         currentImieTryCount++;
                     }
                 });
@@ -60,7 +60,7 @@ function SnapLoginHandler(settingsHelper) {
                 console.log("Was not able to get the IMEI id :(");
                 console.log("Let's try logging in using whitelist instead...");
                 console.log();
-                
+
                 process.argv.push("-w");
                 require("./start.js");
                 return;
@@ -84,9 +84,22 @@ function SnapLoginHandler(settingsHelper) {
         console.log("STARTSNAP: pinging..." + uri);
         request.post({ url: uri, timeout: 5000 }, function (err, response, body) {
             if (err) {
-                console.error("STARTSNAP: ERROR: error: " + err);
-                callback();
-                return;
+                // Offline mode...
+                if ((err.code === "ECONNREFUSED" ||
+                    err.code === "EACCES" ||
+                    err.code === "ENOTFOUND") &&
+                    settingsHelper.settings.policies &&
+                    settingsHelper.settings.policies.disconnectPolicy.offlineMode) {
+
+                    console.log('Starting snap in offline mode');
+                    require("./start.js");
+                    callback(true);
+                }
+                else {
+                    console.error("STARTSNAP: ERROR: error: " + err);
+                    callback();
+                    return;
+                }
             }
             else if (response.statusCode !== 200) {
                 console.error("STARTSNAP: FAILED: response: " + response.statusCode);

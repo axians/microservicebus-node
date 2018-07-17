@@ -43,11 +43,9 @@ process.on('unhandledRejection', err => {
 });
 
 var _ipAddress;
-var microServiceBusHost;
 var maxWidth = 75;
 var debugPort = 9230;
 var debug = process.execArgv.find(function (e) { return e.startsWith('--debug'); }) !== undefined;
-var rootFolder = process.arch == 'mipsel' ? '/mnt/sda1' : __dirname;
 var args = process.argv.slice(1);
 
 if (debug)
@@ -182,7 +180,12 @@ function start(testFlag) {
                         console.log('leaving interval');
                     }
                     else {
-                        if (err.code === "ECONNREFUSED" || err.code === "EACCES" || err.code === "ENOTFOUND") {
+                        // Offline mode...
+                        if ((err.code === "ECONNREFUSED" ||
+                            err.code === "EACCES" ||
+                            err.code === "ENOTFOUND") && 
+                            settingsHelper.settings.policies && 
+                            settingsHelper.settings.policies.disconnectPolicy.offlineMode) {
                             clearInterval(interval);
                             console.log('Starting in offline mode'.red);
                             var MicroServiceBusHost = require("microservicebus-core").Host;

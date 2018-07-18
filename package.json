@@ -17,7 +17,6 @@
     "async": "2.6.0",
     "colors": "1.1.2",
     "compare-version": "0.1.2",
-    "diskusage": "^0.2.4",
     "minimist": "1.2.0",
     "network": "0.4.1",
     "npm": "6.0.0",
@@ -72,5 +71,5 @@
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha"
   },
-  "version": "1.0.21"
+  "version": "1.0.22"
 }

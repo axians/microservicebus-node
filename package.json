@@ -17,6 +17,7 @@
     "async": "2.6.0",
     "colors": "1.1.2",
     "compare-version": "0.1.2",
+    "microservicebus-core": "^1.1.91",
     "minimist": "1.2.0",
     "network": "0.4.1",
     "npm": "6.0.0",

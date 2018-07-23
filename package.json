@@ -72,5 +72,5 @@
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha"
   },
-  "version": "1.0.22"
+  "version": "1.0.23"
 }

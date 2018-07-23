@@ -39,3 +39,4 @@ coverage
 package-lock.json
 settings.json
 *.snap
+.nyc_output/*

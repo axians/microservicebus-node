@@ -41,17 +41,16 @@ let network = require('network');
 process.on('unhandledRejection', err => {
     console.log("SERIOUS ERROR: Caught unhandledRejection. ", err);
 });
+
 var _ipAddress;
-var microServiceBusHost;
 var maxWidth = 75;
 var debugPort = 9230;
 var debug = process.execArgv.find(function (e) { return e.startsWith('--debug'); }) !== undefined;
-var rootFolder = process.arch == 'mipsel' ? '/mnt/sda1' : __dirname;
 var args = process.argv.slice(1);
 
 if (debug)
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-else{
+else {
     network.get_active_interface(function (err, nw) {
         _ipAddress = nw.ip_address;
     });
@@ -76,10 +75,12 @@ function startWithoutDebug() {
         var worker = cluster.fork(process.env);
 
         cluster.on('exit', function (worker, code, signal) {
+            console.log('Exit called. code:' + signal);
             worker = cluster.fork(process.env);
 
             console.log('CODE:' + code.bgGreen.white.bold);
             if (code === 99) { // Controlled exit
+                console.log("Controlled exit");
                 process.exit(0);
             }
             else if (cluster.settings.execArgv.find(function (e) { return e.startsWith('--inspect'); }) !== undefined) {
@@ -100,11 +101,11 @@ function startWithoutDebug() {
 
         cluster.on('message', function (worker, message, handle) {
             try {
-               
-                console.log(util.padRight(" MESSAGE CALLED:" + JSON.stringify(message) + ".", maxWidth, ' ').bgGreen.white.bold);
+
+                //console.log(util.padRight(" MESSAGE CALLED:" + JSON.stringify(message) + ".", maxWidth, ' ').bgGreen.white.bold);
 
                 if (message.cmd === 'START-DEBUG') {
-                    
+                    console.log(util.padRight(" DEBUG MODE", maxWidth, ' ').bgGreen.white.bold);
                     fixedExecArgv.push('--inspect=' + _ipAddress + ':' + debugPort);
 
                     cluster.setupMaster({
@@ -112,8 +113,13 @@ function startWithoutDebug() {
                     });
 
                 }
+                else if (message.cmd === 'SHUTDOWN') {
+
+                    process.exit(99);
+
+                }
                 else {
-                    
+
                     cluster.setupMaster({
                         execArgv: []
                     });
@@ -174,7 +180,31 @@ function start(testFlag) {
                         console.log('leaving interval');
                     }
                     else {
-                        console.log('retrying...');
+                        // Offline mode...
+                        if ((err.code === "ECONNREFUSED" ||
+                            err.code === "EACCES" ||
+                            err.code === "ENOTFOUND") && 
+                            settingsHelper.settings.policies && 
+                            settingsHelper.settings.policies.disconnectPolicy.offlineMode) {
+                            clearInterval(interval);
+                            console.log('Starting in offline mode'.red);
+                            var MicroServiceBusHost = require("microservicebus-core").Host;
+                            var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
+
+                            microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
+
+                            });
+                            microServiceBusHost.OnStopped(function () {
+
+                            });
+                            microServiceBusHost.OnUpdatedItineraryComplete(function () {
+
+                            });
+                            microServiceBusHost.Start(testFlag);
+                        }
+                        else {
+                            console.log('retrying...');
+                        }
                     }
                 });
             }, 10000);
@@ -218,7 +248,8 @@ function start(testFlag) {
 
                         // Check if node is started as Snap
                         if (process.argv[1].endsWith("startsnap")) {
-                            //console.log("Loading microservicebus-core/package.json for snap");
+                            console.log("Loading microservicebus-core/package.json for snap");
+                            console.log("nodePackagePath: " + settingsHelper.nodePackagePath)
                             packageFile = path.resolve(settingsHelper.nodePackagePath, 'microservicebus-core/package.json');
                         }
                         else {
@@ -241,9 +272,11 @@ function start(testFlag) {
                         });
                         var latest = rawData['dist-tags'].latest;
 
-                        if (isBeta)
+                        if (isBeta) {
                             latest = rawData['dist-tags'].beta;
+                            console.log('RUNNING IN BETA MODE'.yellow);
 
+                        }
                         if (corePjson === undefined || util.compareVersion(corePjson.version, latest) < 0) {
                             var version = corePjson === undefined ? "NONE" : corePjson.version;
                             console.log();

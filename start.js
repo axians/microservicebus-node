@@ -37,7 +37,6 @@ var os = require('os');
 var async = require('async');
 let network = require('network');
 
-
 process.on('unhandledRejection', err => {
     console.log("SERIOUS ERROR: Caught unhandledRejection. ", err);
 });
@@ -286,12 +285,27 @@ function start(testFlag) {
                             console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
                             console.log();
 
-                            var corePkg = isBeta ? "microservicebus-core@beta" : "microservicebus-core@latest";
+                            let corePkg = isBeta ? "microservicebus-core@beta" : "microservicebus-core@latest";
+                            let successfulUpdate = true;
+                            let updateComplete = false;
+                            setTimeout(() => {
+                                if(updateComplete) return;
 
+                                successfulUpdate = false;
+                                console.log("Unable to install latest version of miicroservicebus-core. Restarting process.".red)
+                                process.exit();
+                            }, 10 * 60 * 1000); // Installation should complete in 5 min 
+                            
                             util.addNpmPackage(corePkg, true, function (err) {
+                                updateComplete = true;
+                                if(!successfulUpdate){
+                                    //  The prossess should have started with old config
+                                    return;
+                                }
                                 if (err) {
                                     console.log("Unable to install core update".bgRed.white);
                                     console.log("Error: " + err);
+                                    callback(err);
                                 }
                                 else {
                                     console.log("Core installed successfully".bgGreen.white);
@@ -315,6 +329,7 @@ function start(testFlag) {
                     done(err);
                 }
                 else {
+                    console.log("Starting microservicebus-core".grey);
                     var MicroServiceBusHost = require("microservicebus-core").Host;
                     var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
 

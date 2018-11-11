@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# create path for shared socket.
+mkdir -p $SNAP_COMMON/socket

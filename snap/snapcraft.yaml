@@ -13,6 +13,10 @@ plugs:
     name: org.freedesktop.ModemManager1
   serial-port:
     interface: serial-port
+  socket-plug:
+    interface: content
+    target: $SNAP_COMMON/socket
+    default-provider: axdam:socket-slot
 
 apps:
   microservicebus-node:

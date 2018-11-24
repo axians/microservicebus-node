@@ -281,7 +281,10 @@ function start(testFlag) {
                             console.log('RUNNING IN BETA MODE'.yellow);
 
                         }
-                        if (corePjson === undefined || util.compareVersion(corePjson.version, latest) < 0) {
+                        else if(settingsHelper.settings.coreVersion && settingsHelper.settings.coreVersion !== "latest"){
+                            latest = settingsHelper.settings.coreVersion;
+                        }
+                        if (corePjson === undefined || util.compareVersion(corePjson.version, latest) !== 0) {
                             var version = corePjson === undefined ? "NONE" : corePjson.version;
                             console.log();
                             console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
@@ -290,7 +293,7 @@ function start(testFlag) {
                             console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
                             console.log();
 
-                            let corePkg = isBeta ? rawData.name + "@beta" : rawData.name + "@latest";
+                            let corePkg = isBeta ? rawData.name + "@beta" : rawData.name + "@"+latest;
                             let successfulUpdate = true;
                             let updateComplete = false;
                             setTimeout(() => {

@@ -13,6 +13,10 @@ plugs:
     name: org.freedesktop.ModemManager1
   serial-port:
     interface: serial-port
+  socket-plug:
+    interface: content
+    target: $SNAP_COMMON/socket
+    default-provider: microservicebus-dam:socket-slot
 
 apps:
   microservicebus-node:
@@ -43,6 +47,7 @@ apps:
     - raw-usb # custom usb device access
     - serial-port # access to /dev/tty{USB,ACM,AMA,etc}*
     - shutdown # reboot, shutdown
+    - socket-plug # mSB-dam
 #    - snapd-control # ability to refresh, revert, snaps via mSB
 # To be added later when snapd management implemented in mSB.com.
     - spi # access to SPI bus

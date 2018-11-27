@@ -15,8 +15,8 @@ plugs:
     interface: serial-port
   socket-plug:
     interface: content
+    content: socket-directory
     target: $SNAP_COMMON/socket
-    default-provider: microservicebus-dam:socket-slot
 
 apps:
   microservicebus-node:

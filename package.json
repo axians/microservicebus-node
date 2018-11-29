@@ -19,7 +19,7 @@
     "compare-version": "0.1.2",
     "minimist": "1.2.0",
     "network": "0.4.1",
-    "npm": "6.0.0",
+    "npm": "6.4.1",
     "package-json": "2.2.0",
     "request": "2.85.0",
     "require-reload": "0.2.2",
@@ -35,9 +35,9 @@
     "istanbul": "0.4.5",
     "mocha": "5.1.1",
     "mocha-jshint": "^2.3.1",
-    "nyc": "11.7.1",
+    "nyc": "13.1.0",
     "should": "13.2.1",
-    "supertest": "3.0.0",
+    "supertest": "3.3.0",
     "unit.js": "2.0.0"
   },
   "engines": {
@@ -71,7 +71,7 @@
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha"
   },
-  "version": "1.0.27",
+  "version": "1.0.28",
   "config": {
     "microservicebusCore":"microservicebus-core"
   }

@@ -26,7 +26,6 @@ SOFTWARE.
 /* jshint esversion: 6 */
 /* jshint strict:false */
 'use strict';
-
 require('colors');
 var util = require('./lib/Utils.js');
 var pjson = require('./package.json');
@@ -281,7 +280,7 @@ function start(testFlag) {
                             console.log('RUNNING IN BETA MODE'.yellow);
 
                         }
-                        else if(settingsHelper.settings.coreVersion && settingsHelper.settings.coreVersion !== "latest"){
+                        else if(settingsHelper.settings.coreVersion && (settingsHelper.settings.coreVersion !== "latest" || settingsHelper.settings.coreVersion !== "beta")){
                             latest = settingsHelper.settings.coreVersion;
                         }
                         if (corePjson === undefined || util.compareVersion(corePjson.version, latest) !== 0) {

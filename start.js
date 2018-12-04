@@ -276,7 +276,7 @@ function start(testFlag) {
                         var latest = rawData['dist-tags'].latest;
                         var beta = rawData['dist-tags'].beta;
                         var coreVersion = latest;
-                         
+
                         if (isBeta) {
                             coreVersion = rawData['dist-tags'].beta;
                             console.log('RUNNING IN BETA MODE'.yellow);
@@ -290,89 +290,91 @@ function start(testFlag) {
                                     coreVersion = beta;
                                     console.log('RUNNING IN BETA MODE'.yellow);
                                     break;
+                                case "ignore":
+                                    coreVersion = corePjson.version;
                                 default:
                                     coreVersion = settingsHelper.settings.coreVersion;
                                     break;
                             }
-                }
-
-                if (corePjson === undefined || util.compareVersion(corePjson.version, coreVersion) !== 0) {
-                    var version = corePjson === undefined ? "NONE" : corePjson.version;
-                    console.log();
-                    console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
-                    console.log(util.padRight(" New version of Core available. Performing update, please wait...", maxWidth, ' ').bgGreen.white.bold);
-                    console.log(util.padRight(" Current version: " + version + ". New version: " + coreVersion, maxWidth, ' ').bgGreen.white.bold);
-                    console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
-                    console.log();
-
-                    let corePkg = isBeta ? rawData.name + "@beta" : rawData.name + "@" + coreVersion;
-                    let successfulUpdate = true;
-                    let updateComplete = false;
-                    setTimeout(() => {
-                        if (updateComplete) return;
-
-                        successfulUpdate = false;
-                        console.log(`Unable to install ${coreVersion} version of miicroservicebus-core. Restarting process.`.red);
-                        process.exit();
-                    }, 10 * 60 * 1000); // Installation should complete in 5 min 
-
-                    util.addNpmPackage(corePkg, true, function (err) {
-                        updateComplete = true;
-                        if (!successfulUpdate) {
-                            //  The prossess should have started with old config
-                            return;
                         }
-                        if (err) {
-                            console.log("Unable to install core update".bgRed.white);
-                            console.log("Error: " + err);
-                            callback(err);
+
+                        if (corePjson === undefined || util.compareVersion(corePjson.version, coreVersion) !== 0) {
+                            var version = corePjson === undefined ? "NONE" : corePjson.version;
+                            console.log();
+                            console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
+                            console.log(util.padRight(" New version of Core available. Performing update, please wait...", maxWidth, ' ').bgGreen.white.bold);
+                            console.log(util.padRight(" Current version: " + version + ". New version: " + coreVersion, maxWidth, ' ').bgGreen.white.bold);
+                            console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
+                            console.log();
+
+                            let corePkg = isBeta ? rawData.name + "@beta" : rawData.name + "@" + coreVersion;
+                            let successfulUpdate = true;
+                            let updateComplete = false;
+                            setTimeout(() => {
+                                if (updateComplete) return;
+
+                                successfulUpdate = false;
+                                console.log(`Unable to install ${coreVersion} version of miicroservicebus-core. Restarting process.`.red);
+                                process.exit();
+                            }, 10 * 60 * 1000); // Installation should complete in 5 min 
+
+                            util.addNpmPackage(corePkg, true, function (err) {
+                                updateComplete = true;
+                                if (!successfulUpdate) {
+                                    //  The prossess should have started with old config
+                                    return;
+                                }
+                                if (err) {
+                                    console.log("Unable to install core update".bgRed.white);
+                                    console.log("Error: " + err);
+                                    callback(err);
+                                }
+                                else {
+                                    console.log("Core installed successfully".bgGreen.white);
+                                    callback();
+                                }
+                            });
                         }
                         else {
-                            console.log("Core installed successfully".bgGreen.white);
                             callback();
                         }
+                    })
+                    .catch(function (err) {
+                        console.log('ERROR: ' + err);
+                        callback(err);
                     });
+            }
+        ],
+            function (err) { // Starting microServiceBusHost
+                if (err) {
+                    console.log('ERROR: ' + err);
+                    done(err);
                 }
                 else {
-                    callback();
+                    let microservicebusCore = "microservicebus-core";
+                    if (pjson.config && pjson.config.microservicebusCore) {
+                        microservicebusCore = pjson.config.microservicebusCore;
+                        console.log("mSB.core: " + microservicebusCore);
+                    }
+                    console.log("Starting ".grey + microservicebusCore.grey);
+                    var MicroServiceBusHost = require(microservicebusCore).Host;
+                    var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
+
+                    microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
+
+                    });
+                    microServiceBusHost.OnStopped(function () {
+
+                    });
+                    microServiceBusHost.OnUpdatedItineraryComplete(function () {
+
+                    });
+                    microServiceBusHost.Start(testFlag);
+                    done();
                 }
-            })
-            .catch(function (err) {
-                console.log('ERROR: ' + err);
-                callback(err);
+
             });
     }
-        ],
-    function (err) { // Starting microServiceBusHost
-        if (err) {
-            console.log('ERROR: ' + err);
-            done(err);
-        }
-        else {
-            let microservicebusCore = "microservicebus-core";
-            if (pjson.config && pjson.config.microservicebusCore) {
-                microservicebusCore = pjson.config.microservicebusCore;
-                console.log("mSB.core: " + microservicebusCore);
-            }
-            console.log("Starting ".grey + microservicebusCore.grey);
-            var MicroServiceBusHost = require(microservicebusCore).Host;
-            var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
-
-            microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
-
-            });
-            microServiceBusHost.OnStopped(function () {
-
-            });
-            microServiceBusHost.OnUpdatedItineraryComplete(function () {
-
-            });
-            microServiceBusHost.Start(testFlag);
-            done();
-        }
-
-    });
-}
 
 }
 

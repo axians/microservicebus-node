@@ -26,6 +26,8 @@ SOFTWARE.
 /* jshint esversion: 6 */
 /* jshint strict:false */
 'use strict';
+
+console.log(process.env);
 require('colors');
 var util = require('./lib/Utils.js');
 var pjson = require('./package.json');

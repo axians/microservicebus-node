@@ -27,16 +27,16 @@ SOFTWARE.
 /* jshint strict:false */
 'use strict';
 
-console.log(process.env);
 require('colors');
 var util = require('./lib/Utils.js');
 var pjson = require('./package.json');
 var checkVersion = require('package-json');
-var npm = require('npm');
 var fs = require('fs');
 var os = require('os');
 var async = require('async');
 let network = require('network');
+
+util.prepareNpm();
 
 process.on('unhandledRejection', err => {
     console.log("SERIOUS ERROR: Caught unhandledRejection. ", err);

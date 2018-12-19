@@ -40,3 +40,4 @@ coverage
 settings.json
 *.snap
 .nyc_output/*
+msb-licenses.json

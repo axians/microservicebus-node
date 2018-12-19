@@ -10,7 +10,15 @@ var settingsHelper = new SettingsHelper();
 
 var packagePath = settingsHelper.nodePackagePath;
 
-process.env.NODE_PATH = packagePath;
+if(!process.env.NODE_PATH){
+    process.env.NODE_PATH = packagePath;
+}
+else{
+    if( !process.env.NODE_PATH.split(':').find(function(p){return p = packagePath;})){
+        process.env.NODE_PATH = packagePath;
+    }
+}
+process.env.NODE_PATH = process.env.NODE_PATH + ":" + packagePath;
 process.env.HOME = os.userInfo().homedir;
 
 require('app-module-path').addPath(packagePath);

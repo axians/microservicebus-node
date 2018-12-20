@@ -80,6 +80,8 @@ environment:
 parts:
   node:
     source: ../
+    npm-flags:
+      - --production
     plugin: nodejs
     node-engine: 10.14.2
     stage-packages:

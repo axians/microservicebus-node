@@ -31,11 +31,12 @@ require('colors');
 var util = require('./lib/Utils.js');
 var pjson = require('./package.json');
 var checkVersion = require('package-json');
-var npm = require('npm');
 var fs = require('fs');
 var os = require('os');
 var async = require('async');
 let network = require('network');
+
+util.prepareNpm();
 
 process.on('unhandledRejection', err => {
     console.log("SERIOUS ERROR: Caught unhandledRejection. ", err);
@@ -148,8 +149,6 @@ function startWithoutDebug() {
                 cluster.workers[id].process.kill('SIGTERM');
             }
         }
-        //else
-        //console.log('Uncaught exception: '.red + err);
     });
 }
 
@@ -182,8 +181,8 @@ function start(testFlag) {
                         // Offline mode...
                         if ((err.code === "ECONNREFUSED" ||
                             err.code === "EACCES" ||
-                            err.code === "ENOTFOUND") && 
-                            settingsHelper.settings.policies && 
+                            err.code === "ENOTFOUND") &&
+                            settingsHelper.settings.policies &&
                             settingsHelper.settings.policies.disconnectPolicy.offlineMode) {
                             clearInterval(interval);
                             console.log('Starting in offline mode'.red);
@@ -214,7 +213,9 @@ function start(testFlag) {
     function checkVersionsAndStart(done) {
         async.waterfall([
             function (callback) { // Check version of microservicebus-node
-                checkVersion("microservicebus-node")
+                console.log("mSB.node: " + pjson.name);
+
+                checkVersion(pjson.name)
                     .then(function (rawData) {
                         var latest = rawData['dist-tags'].latest;
                         if (util.compareVersion(pjson.version, latest) < 0) {
@@ -237,8 +238,13 @@ function start(testFlag) {
                     });
             },
             function (callback) { // Check version of microservicebus-core
+                let microservicebusCore = "microservicebus-core";
+                if (pjson.config && pjson.config.microservicebusCore) {
+                    microservicebusCore = pjson.config.microservicebusCore;
+                    console.log("mSB.core: " + microservicebusCore);
+                }
 
-                checkVersion("microservicebus-core")
+                checkVersion(microservicebusCore)
                     .then(function (rawData) {
 
                         let path = require("path");
@@ -253,7 +259,7 @@ function start(testFlag) {
                         }
                         else {
                             try {
-                                packagePath = require.resolve('microservicebus-core');
+                                packagePath = require.resolve(rawData.name);
                                 packagePath = path.dirname(packagePath);
                                 packageFile = path.resolve(packagePath, 'package.json');
                             }
@@ -270,35 +276,53 @@ function start(testFlag) {
                             return a === "--beta";
                         });
                         var latest = rawData['dist-tags'].latest;
+                        var beta = rawData['dist-tags'].beta;
+                        var coreVersion = latest;
 
                         if (isBeta) {
-                            latest = rawData['dist-tags'].beta;
+                            coreVersion = rawData['dist-tags'].beta;
                             console.log('RUNNING IN BETA MODE'.yellow);
-
                         }
-                        if (corePjson === undefined || util.compareVersion(corePjson.version, latest) < 0) {
+                        else if (settingsHelper.settings.coreVersion) {
+                            switch (settingsHelper.settings.coreVersion) {
+                                case "latest":
+                                    coreVersion = latest;
+                                    break;
+                                case "beta":
+                                    coreVersion = beta;
+                                    console.log('RUNNING IN BETA MODE'.yellow);
+                                    break;
+                                case "ignore":
+                                    coreVersion = corePjson.version;
+                                default:
+                                    coreVersion = settingsHelper.settings.coreVersion;
+                                    break;
+                            }
+                        }
+
+                        if (corePjson === undefined || util.compareVersion(corePjson.version, coreVersion) !== 0) {
                             var version = corePjson === undefined ? "NONE" : corePjson.version;
                             console.log();
                             console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
                             console.log(util.padRight(" New version of Core available. Performing update, please wait...", maxWidth, ' ').bgGreen.white.bold);
-                            console.log(util.padRight(" Current version: " + version + ". New version: " + latest, maxWidth, ' ').bgGreen.white.bold);
+                            console.log(util.padRight(" Current version: " + version + ". New version: " + coreVersion, maxWidth, ' ').bgGreen.white.bold);
                             console.log(util.padRight("", maxWidth, ' ').bgGreen.white.bold);
                             console.log();
 
-                            let corePkg = isBeta ? "microservicebus-core@beta" : "microservicebus-core@latest";
+                            let corePkg = isBeta ? rawData.name + "@beta" : rawData.name + "@" + coreVersion;
                             let successfulUpdate = true;
                             let updateComplete = false;
                             setTimeout(() => {
-                                if(updateComplete) return;
+                                if (updateComplete) return;
 
                                 successfulUpdate = false;
-                                console.log("Unable to install latest version of miicroservicebus-core. Restarting process.".red)
+                                console.log(`Unable to install ${coreVersion} version of miicroservicebus-core. Restarting process.`.red);
                                 process.exit();
                             }, 10 * 60 * 1000); // Installation should complete in 5 min 
-                            
+
                             util.addNpmPackage(corePkg, true, function (err) {
                                 updateComplete = true;
-                                if(!successfulUpdate){
+                                if (!successfulUpdate) {
                                     //  The prossess should have started with old config
                                     return;
                                 }
@@ -329,8 +353,13 @@ function start(testFlag) {
                     done(err);
                 }
                 else {
-                    console.log("Starting microservicebus-core".grey);
-                    var MicroServiceBusHost = require("microservicebus-core").Host;
+                    let microservicebusCore = "microservicebus-core";
+                    if (pjson.config && pjson.config.microservicebusCore) {
+                        microservicebusCore = pjson.config.microservicebusCore;
+                        console.log("mSB.core: " + microservicebusCore);
+                    }
+                    console.log("Starting ".grey + microservicebusCore.grey);
+                    var MicroServiceBusHost = require(microservicebusCore).Host;
                     var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
 
                     microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {

@@ -15,16 +15,18 @@
   "dependencies": {
     "app-module-path": "2.2.0",
     "async": "2.6.0",
+    "azure-iot-common": "^1.8.2",
+    "azure-iot-device": "^1.8.2",
+    "azure-iot-device-amqp": "^1.8.2",
     "colors": "1.1.2",
     "compare-version": "0.1.2",
     "minimist": "1.2.0",
     "network": "0.4.1",
-    "npm": "6.0.0",
     "package-json": "2.2.0",
-    "request": "2.85.0",
+    "request": "2.88.0",
     "require-reload": "0.2.2",
     "tar": "4.4.1",
-    "uuid": "2.0.3"
+    "uuid": "3.3.2"
   },
   "description": "node.js node for microservicebus. Please visit https://microservicebus.com for more information.",
   "devDependencies": {
@@ -35,10 +37,9 @@
     "istanbul": "0.4.5",
     "mocha": "5.1.1",
     "mocha-jshint": "^2.3.1",
-    "nyc": "11.7.1",
+    "nyc": "13.1.0",
     "should": "13.2.1",
-    "supertest": "3.0.0",
-    "unit.js": "2.0.0"
+    "supertest": "3.3.0"
   },
   "engines": {
     "node": ">=0.12.0 <7.10.2"
@@ -71,5 +72,8 @@
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha"
   },
-  "version": "1.0.26"
+  "version": "2.0.0",
+  "config": {
+    "microservicebusCore": "microservicebus-core"
+  }
 }

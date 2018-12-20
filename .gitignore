@@ -36,7 +36,8 @@ bin
 typings
 coverage
 *.bat
-package-lock.json
+#package-lock.json
 settings.json
 *.snap
 .nyc_output/*
+msb-licenses.json

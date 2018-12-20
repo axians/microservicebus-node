@@ -5,20 +5,16 @@
 'use strict'; /* global describe, it */
 
 var path = require('path');
-// var initialArgs = process.argv[1];
-// process.argv[1] = path.resolve(__dirname, "../start.js");
  var mocha = require('mocha');
  var expect = require('chai').expect;
  var assert = require('assert');
-// var request = require('supertest');
-// var express = require('express');
  var should = require('should');
 var fs = require('fs');
 var SCRIPTFOLDER = path.resolve(process.env.HOME, "microServiceBus/services");
-var util;// = require("../node_modules/microservicebus-core/lib/utils.js");
-var MicroServiceBusHost;// = require("../node_modules/microservicebus-core/lib/MicroServiceBusHost.js");
-var SettingsHelper;// = require("../lib/SettingsHelper.js");
-var settingsHelper;// = new SettingsHelper();
+var util;
+var MicroServiceBusHost;
+var SettingsHelper;
+var settingsHelper;
 var orgId;
 var nodeKey;
 var settings;
@@ -52,22 +48,8 @@ describe('mSB should work', function(){
         settingsHelper.save();
         done();
     });
-    it('Removing microServiceBus-core should work', function (done) {
-        this.timeout(60000);
-        util.removeNpmPackage("microservicebus-core",  function (err) {
-            if (err) {
-                console.log("Unable to remove core".bgRed.white);
-                console.log("Error: " + err);
-                throw err;
-            }
-            else {
-                console.log("Core uninstalled successfully".bgGreen.white);
-                done();
-            }
-        });
-    });
     it('Downloading microServiceBus-core should work', function (done) {
-        this.timeout(120000);
+        this.timeout(180000);
         util.addNpmPackage("microservicebus-core@latest", true, function (err) {
             if (err) {
                 console.log("Unable to install core update".bgRed.white);
@@ -86,5 +68,19 @@ describe('mSB should work', function(){
         microServiceBusHost = new MicroServiceBusHost(settingsHelper);
         expect(microServiceBusHost).to.not.be.null;
         done();
+    });
+    it('Removing microServiceBus-core should work', function (done) {
+        this.timeout(180000);
+        util.removeNpmPackage("microservicebus-core",  function (err) {
+            if (err) {
+                console.log("Unable to remove core".bgRed.white);
+                console.log("Error: " + err);
+                throw err;
+            }
+            else {
+                console.log("Core uninstalled successfully".bgGreen.white);
+                done();
+            }
+        });
     });
 });

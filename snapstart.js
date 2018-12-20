@@ -70,8 +70,24 @@ function SnapLoginHandler(settingsHelper) {
                     if (online) {
                         clearInterval(self.interval);
                         console.log("STARTSNAP: Online");
-                        require("./start.js");
-                        return;
+                        try{
+                            require("./start.js");
+                            return;
+                        }
+                        catch(ex){
+                            console.log("Failed to call start.js. " + ex);
+                            setTimeout(() => {
+                                try{
+                                    console.log("Retrying to require start.js");
+                                    require("./start.js");
+                                    return;
+                                }
+                                catch(ex){
+                                    console.log("Failed again :(" + ex);
+                                    return;
+                                }   
+                            }, 1000);
+                        }
                     }
                 })
             }

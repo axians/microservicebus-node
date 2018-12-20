@@ -1,5 +1,5 @@
 name: microservicebus-node
-version: '1.26'
+version: '2.0'
 summary: microServiceBus - IoT Device Management
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
@@ -13,6 +13,10 @@ plugs:
     name: org.freedesktop.ModemManager1
   serial-port:
     interface: serial-port
+  socket-plug:
+    interface: content
+    content: socket-directory
+    target: $SNAP_COMMON/socket
 
 apps:
   microservicebus-node:
@@ -43,6 +47,7 @@ apps:
     - raw-usb # custom usb device access
     - serial-port # access to /dev/tty{USB,ACM,AMA,etc}*
     - shutdown # reboot, shutdown
+    - socket-plug # mSB-dam
 #    - snapd-control # ability to refresh, revert, snaps via mSB
 # To be added later when snapd management implemented in mSB.com.
     - spi # access to SPI bus
@@ -76,7 +81,7 @@ parts:
   node:
     source: ../
     plugin: nodejs
-    node-engine: 8.11.1
+    node-engine: 10.14.2
     stage-packages:
     - python2.7
     - build-essential

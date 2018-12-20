@@ -1,5 +1,7 @@
 name: microservicebus-node
-version: '2.0'
+version: '2.0
+npm-flags:
+  '
 summary: microServiceBus - IoT Device Management
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
@@ -80,6 +82,8 @@ environment:
 parts:
   node:
     source: ../
+    npm-flags:
+      - production
     plugin: nodejs
     node-engine: 10.14.2
     stage-packages:

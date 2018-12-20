@@ -15,6 +15,9 @@
   "dependencies": {
     "app-module-path": "2.2.0",
     "async": "2.6.0",
+    "azure-iot-common": "^1.8.2",
+    "azure-iot-device": "^1.8.2",
+    "azure-iot-device-amqp": "^1.8.2",
     "colors": "1.1.2",
     "compare-version": "0.1.2",
     "minimist": "1.2.0",
@@ -69,7 +72,7 @@
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha"
   },
-  "version": "1.0.35",
+  "version": "1.1.0",
   "config": {
     "microservicebusCore": "microservicebus-core"
   }

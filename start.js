@@ -158,14 +158,16 @@ function start(testFlag) {
     console.log();
     console.log(util.padRight("", maxWidth, ' ').bgBlue.white.bold);
     console.log(util.padRight(" microServicebus.com", maxWidth, ' ').bgBlue.white.bold);
-    console.log(util.padRight(" Node.js version    : " + process.version, maxWidth, ' ').bgBlue.white);
-    console.log(util.padRight(" NPM package version: " + pjson.version, maxWidth, ' ').bgBlue.white);
-    console.log(util.padRight(" Architecture       : " + process.arch, maxWidth, ' ').bgBlue.white);
-    console.log(util.padRight(" Agent host         : " + settingsHelper.agentHost, maxWidth, ' ').bgBlue.white);
-    console.log(util.padRight(" Home directory     : " + settingsHelper.homeDirectory, maxWidth, ' ').bgBlue.white);
-    console.log(util.padRight(" NPM directory      : " + settingsHelper.nodePackagePath, maxWidth, ' ').bgBlue.white);
+    console.log(util.padRight(" Node.js version     : " + process.version, maxWidth, ' ').bgBlue.white);
+    console.log(util.padRight(" NPM package version : " + pjson.version, maxWidth, ' ').bgBlue.white);
+    console.log(util.padRight(" Architecture        : " + process.arch, maxWidth, ' ').bgBlue.white);
+    console.log(util.padRight(" Agent host          : " + settingsHelper.agentHost, maxWidth, ' ').bgBlue.white);
+    console.log(util.padRight(" Home directory      : " + settingsHelper.homeDirectory, maxWidth, ' ').bgBlue.white);
+    console.log(util.padRight(" NPM directory       : " + settingsHelper.nodePackagePath, maxWidth, ' ').bgBlue.white);
+    console.log(util.padRight(" Licences            : https://microservicebus.com/licenses", maxWidth, ' ').bgBlue.white);
+    console.log(util.padRight(" GIT repository      : https://github.com/axians/microservicebus-node", maxWidth, ' ').bgBlue.white);
+    console.log(util.padRight("", maxWidth, ' ').bgBlue.white.bold);
     console.log(util.padRight(" For more information visit: http://microservicebus.com", maxWidth, ' ').bgBlue.white);
-    console.log(util.padRight(" GIT repository: https://github.com/axians/microservicebus-node", maxWidth, ' ').bgBlue.white);
     console.log(util.padRight("", maxWidth, ' ').bgBlue.white.bold);
     console.log();
 
@@ -213,7 +215,7 @@ function start(testFlag) {
     function checkVersionsAndStart(done) {
         async.waterfall([
             function (callback) { // Check version of microservicebus-node
-                console.log("mSB.node: " + pjson.name);
+                //console.log("mSB.node: " + pjson.name);
 
                 checkVersion(pjson.name)
                     .then(function (rawData) {
@@ -241,7 +243,7 @@ function start(testFlag) {
                 let microservicebusCore = "microservicebus-core";
                 if (pjson.config && pjson.config.microservicebusCore) {
                     microservicebusCore = pjson.config.microservicebusCore;
-                    console.log("mSB.core: " + microservicebusCore);
+                    //console.log("mSB.core: " + microservicebusCore);
                 }
 
                 checkVersion(microservicebusCore)
@@ -356,7 +358,7 @@ function start(testFlag) {
                     let microservicebusCore = "microservicebus-core";
                     if (pjson.config && pjson.config.microservicebusCore) {
                         microservicebusCore = pjson.config.microservicebusCore;
-                        console.log("mSB.core: " + microservicebusCore);
+                        //console.log("mSB.core: " + microservicebusCore);
                     }
                     console.log("Starting ".grey + microservicebusCore.grey);
                     var MicroServiceBusHost = require(microservicebusCore).Host;

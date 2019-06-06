@@ -289,6 +289,9 @@ function start(testFlag) {
                                         break;
                                 }
                             }
+                            // console.log(`Expected to run mSB-core on ${settingsHelper.settings.coreVersion} version`);
+                            // console.log(`Current version ${corePjson.version}`);
+                            // console.log(`Version diff = ${util.compareVersion(corePjson.version, coreVersion)}`);
 
                             if (corePjson === undefined || util.compareVersion(corePjson.version, coreVersion) !== 0) {
                                 var version = corePjson === undefined ? "NONE" : corePjson.version;

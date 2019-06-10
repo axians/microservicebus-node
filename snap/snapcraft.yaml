@@ -17,6 +17,8 @@ plugs:
     interface: content
     content: socket-directory
     target: $SNAP_COMMON/socket
+  tpm:
+    interface: tpm
 
 apps:
   microservicebus-node:

@@ -87,7 +87,7 @@ parts:
     stage-packages:
     - python2.7
     - build-essential
-    - libdb-dev.0
+    - libdb-dev
     - modemmanager
     - vim
     stage:

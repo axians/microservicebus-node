@@ -50,6 +50,7 @@ describe('mSB should work', function(){
     });
     it('Downloading microServiceBus-core should work', function (done) {
         this.timeout(180000);
+        util.prepareNpm();
         util.addNpmPackage("microservicebus-core@latest", true, function (err) {
             if (err) {
                 console.log("Unable to install core update".bgRed.white);

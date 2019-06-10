@@ -83,11 +83,11 @@ parts:
     npm-flags:
       - --production
     plugin: nodejs
-    node-engine: '8.15'
+    node-engine: '8.15.0'
     stage-packages:
     - python2.7
     - build-essential
-    - libdb-dev
+    - libdb-dev.0
     - modemmanager
     - vim
     stage:
@@ -103,7 +103,7 @@ parts:
 
   node-headers:
     plugin: dump
-    source: https://nodejs.org/dist/v8.11.1/node-v8.11.1-headers.tar.gz
+    source: https://nodejs.org/dist/v8.15.0/node-v8.15.0-headers.tar.gz
     organize:
      include/: usr/include/
 

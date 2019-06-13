@@ -96,7 +96,7 @@ settingsHelper.save();
 console.log("Settings updated".green);
 console.log();
 
-console.log("UPDATE VERSION!".red + " Current package version: " + pjson.version.green);
+console.log("Current package version: " + pjson.version.green);
 
 
 function deleteFolderRecursive(path) {

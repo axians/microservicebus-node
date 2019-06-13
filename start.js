@@ -224,7 +224,7 @@ function start(testFlag) {
                     })
                     .catch(function (err) {
                         console.log("General error checking version from microservicebus-node: " + err);
-                        callback(err);
+                        callback();
                     });
             },
             function (callback) { // Check version of microservicebus-core
@@ -340,7 +340,7 @@ function start(testFlag) {
                         }
                     })
                     .catch(function (err) {
-                        console.log("General error checking version from microservicebus-core" + err);
+                        console.log("General error checking version from microservicebus-core: " + err);
                         callback(err);
                     });
             }

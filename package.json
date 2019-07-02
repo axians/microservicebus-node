@@ -27,15 +27,14 @@
   },
   "description": "node.js node for microservicebus. Please visit https://microservicebus.com for more information.",
   "devDependencies": {
-    "assert": "1.4.1",
-    "body-parser": "1.18.2",
-    "chai": "4.1.2",
-    "express": "4.16.3",
-    "mocha": "^6.1.4",
-    "mocha-jshint": "^2.3.1",
+    "assert": "2.0.0",
+    "body-parser": "1.19.0",
+    "chai": "4.2.0",
+    "express": "4.17.1",
+    "mocha": "6.1.4",
     "nyc": "14.1.1",
-    "should": "13.2.1",
-    "supertest": "3.3.0"
+    "should": "13.2.3",
+    "supertest": "4.0.2"
   },
   "engines": {
     "node": ">=0.12.0 <7.10.2"

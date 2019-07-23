@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "app-module-path": "2.2.0",
-    "async": "2.6.0",
+    "async": "3.1.0",
     "colors": "1.1.2",
     "compare-version": "0.1.2",
     "minimist": "1.2.0",
@@ -22,6 +22,7 @@
     "package-json": "2.2.0",
     "request": "2.88.0",
     "require-reload": "0.2.2",
+    "serialport": "7.1.5",
     "tar": "4.4.2",
     "uuid": "3.3.2"
   },
@@ -31,13 +32,13 @@
     "body-parser": "1.19.0",
     "chai": "4.2.0",
     "express": "4.17.1",
-    "mocha": "6.1.4",
+    "mocha": "6.2.0",
     "nyc": "14.1.1",
     "should": "13.2.3",
     "supertest": "4.0.2"
   },
   "engines": {
-    "node": ">=0.12.0 <7.10.2"
+    "node": ">=0.12.0 <10.1.1"
   },
   "keywords": [
     "IoT",

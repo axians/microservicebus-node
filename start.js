@@ -35,6 +35,7 @@ var fs = require('fs');
 var os = require('os');
 var async = require('async');
 let network = require('network');
+let minimist = require('minimist');
 
 util.prepareNpm();
 
@@ -45,7 +46,7 @@ process.on('unhandledRejection', err => {
 var _ipAddress;
 var maxWidth = 75;
 var debugPort = 9230;
-var debug = process.execArgv.find(function (e) { return e.startsWith('--debug'); }) !== undefined;
+let debug = minimist(process.argv.slice(2)).debug || minimist(process.execArgv).debug;
 var args = process.argv.slice(1);
 
 if (debug)
@@ -224,7 +225,7 @@ function start(testFlag) {
                     })
                     .catch(function (err) {
                         console.log("General error checking version from microservicebus-node: " + err);
-                        callback(err);
+                        callback();
                     });
             },
             function (callback) { // Check version of microservicebus-core
@@ -267,6 +268,7 @@ function start(testFlag) {
                             });
                             var latest = rawData['dist-tags'].latest;
                             var beta = rawData['dist-tags'].beta;
+                            var experimental = rawData['dist-tags'].experimental;
                             var coreVersion = latest;
 
                             if (isBeta) {
@@ -282,6 +284,10 @@ function start(testFlag) {
                                         coreVersion = beta;
                                         console.log('RUNNING IN BETA MODE'.yellow);
                                         break;
+                                        case "experimental":
+                                            coreVersion = experimental;
+                                            console.log('RUNNING IN BETA MODE'.yellow);
+                                            break;
                                     case "ignore":
                                         coreVersion = corePjson.version;
                                     default:
@@ -337,7 +343,7 @@ function start(testFlag) {
                         }
                     })
                     .catch(function (err) {
-                        console.log("General error checking version from microservicebus-core" + err);
+                        console.log("General error checking version from microservicebus-core: " + err);
                         callback(err);
                     });
             }

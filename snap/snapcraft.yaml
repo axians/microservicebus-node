@@ -1,5 +1,5 @@
 name: microservicebus-node
-version: '2.0'
+version: '2.0.7'
 summary: microServiceBus - IoT Device Management
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
@@ -17,6 +17,8 @@ plugs:
     interface: content
     content: socket-directory
     target: $SNAP_COMMON/socket
+  tpm:
+    interface: tpm
 
 apps:
   microservicebus-node:
@@ -83,7 +85,7 @@ parts:
     npm-flags:
       - --production
     plugin: nodejs
-    node-engine: 8.15
+    node-engine: '8.15.0'
     stage-packages:
     - python2.7
     - build-essential
@@ -103,7 +105,7 @@ parts:
 
   node-headers:
     plugin: dump
-    source: https://nodejs.org/dist/v8.11.1/node-v8.11.1-headers.tar.gz
+    source: https://nodejs.org/dist/v8.15.0/node-v8.15.0-headers.tar.gz
     organize:
      include/: usr/include/
 

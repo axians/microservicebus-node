@@ -22,7 +22,6 @@
     "package-json": "2.2.0",
     "request": "2.88.0",
     "require-reload": "0.2.2",
-    "serialport": "7.1.5",
     "tar": "4.4.2",
     "uuid": "3.3.2"
   },

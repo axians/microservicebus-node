@@ -47,7 +47,7 @@ function SnapLoginHandler(settingsHelper) {
                                     console.log("done");
                                 }
                             });
-                        }, 2000);
+                        }, 30000);
                     }
                     else {
                         currentImieTryCount++;
@@ -147,8 +147,7 @@ function SnapLoginHandler(settingsHelper) {
         });
     }
     function tryLoginUsingICCID(imei, callback) {
-        var hubUri = url.parse(settingsHelper.settings.hubUri);
-
+        let host = process.env.MSB_HOST ? process.env.MSB_HOST: url.parse(settingsHelper.settings.hubUri).host;
         let uri = `https://${host}/jasper/signInUsingIMEI?imeiId=${imei}&hostname=${os.hostname()}`;
         console.log("STARTSNAP: calling jasper service..." + uri);
         request.post({ url: uri, timeout: 5000 }, function (err, response, body) {

@@ -149,7 +149,7 @@ function SnapLoginHandler(settingsHelper) {
     function tryLoginUsingICCID(imei, callback) {
         var hubUri = url.parse(settingsHelper.settings.hubUri);
 
-        var uri = 'https://' + hubUri.host + '/jasper/signInUsingICCID?iccid=' + imei;
+        let uri = `https://${host}/jasper/signInUsingIMEI?imeiId=${imei}&hostname=${os.hostname()}`;
         console.log("STARTSNAP: calling jasper service..." + uri);
         request.post({ url: uri, timeout: 5000 }, function (err, response, body) {
             if (err) {

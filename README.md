@@ -1,7 +1,7 @@
 ﻿![alt](https://blogical.blob.core.windows.net/microservicebus/Logosmall.png)
 
 [![Build Status](https://travis-ci.org/axians/microservicebus-node.svg?branch=dev)](https://travis-ci.org/axians/microservicebus-node)
-
+[![microservicebus-node](https://snapcraft.io/microservicebus-node/badge.svg)](https://snapcraft.io/microservicebus-node)
 
 
 # microservicebus-node

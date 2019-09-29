@@ -46,7 +46,7 @@ process.on('unhandledRejection', err => {
 var _ipAddress;
 var maxWidth = 75;
 var debugPort = 9230;
-let debug = minimist(process.argv.slice(2)).debug || minimist(process.execArgv).debug;
+let debug = minimist(process.argv.slice(2)).inspect || minimist(process.execArgv).inspect;
 var args = process.argv.slice(1);
 
 if (debug)

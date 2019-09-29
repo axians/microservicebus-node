@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+require("./start.js");
+return;
 
 // DEBUG
 //process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -186,3 +188,10 @@ function SnapLoginHandler(settingsHelper) {
     }
 
 }
+
+
+
+
+
+
+

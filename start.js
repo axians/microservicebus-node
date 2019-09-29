@@ -243,7 +243,7 @@ function start(testFlag) {
                             let packageFile;
 
                             // Check if node is started as Snap
-                            if (process.argv[1].endsWith("startsnap")) {
+                            if (process.env["SNAP_USER_DATA"] != null) {
                                 console.log("Loading microservicebus-core/package.json for snap");
                                 console.log("nodePackagePath: " + settingsHelper.nodePackagePath)
                                 packageFile = path.resolve(settingsHelper.nodePackagePath, 'microservicebus-core/package.json');
@@ -354,6 +354,9 @@ function start(testFlag) {
                     done(err);
                 }
                 else {
+                    if(process.env["MSB_USE_IMEI"] == 'true'){
+                        process.argv.push("--imei");
+                    }
                     let microservicebusCore = "microservicebus-core";
                     if (pjson.config && pjson.config.microservicebusCore) {
                         microservicebusCore = pjson.config.microservicebusCore;

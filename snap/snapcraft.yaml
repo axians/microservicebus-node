@@ -1,5 +1,5 @@
 name: microservicebus-node
-version: '2.0.9'
+version: '2.0.10'
 summary: microServiceBus - IoT Device Management
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
@@ -75,6 +75,7 @@ environment:
   NPM_CONFIG_CACHE: $SNAP_USER_DATA/.npm
   GYP_CONFIG_DIR: $SNAP_USER_DATA/.gyp
   MSB_NODEPATH: $SNAP_USER_DATA/dummy
+  MSB_USE_IMEI: true
   HOME: $SNAP_USER_DATA
   NPM_CONFIG_DEVDIR: $SNAP_USER_DATA/.gyp
   NPM_CONFIG_NODEDIR: $SNAP/usr/include/node

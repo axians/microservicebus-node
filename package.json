@@ -22,7 +22,7 @@
     "package-json": "2.2.0",
     "request": "2.88.0",
     "require-reload": "0.2.2",
-    "tar": "4.4.2",
+    "tar": "6.0.1",
     "uuid": "3.3.2"
   },
   "description": "node.js node for microservicebus. Please visit https://microservicebus.com for more information.",
@@ -32,7 +32,7 @@
     "chai": "4.2.0",
     "express": "4.17.1",
     "mocha": "6.2.0",
-    "nyc": "14.1.1",
+    "nyc": "15.0.0",
     "should": "13.2.3",
     "supertest": "4.0.2"
   },
@@ -67,7 +67,7 @@
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha"
   },
-  "version": "2.0.10",
+  "version": "2.0.11",
   "config": {
     "microservicebusCore": "microservicebus-core"
   }

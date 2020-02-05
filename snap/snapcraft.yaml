@@ -1,8 +1,8 @@
 name: microservicebus-node
-version: '2.0.10'
+version: '2.0.11'
 summary: microServiceBus - IoT Device Management
 description: |
-  microServiceBus.com Â® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
+  microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
 grade: stable
 confinement: strict
 

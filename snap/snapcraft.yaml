@@ -86,7 +86,7 @@ parts:
     npm-flags:
       - --production
     plugin: nodejs
-    node-engine: '12.8.0'
+    node-engine: '8.15.0'
     stage-packages:
     - python2.7
     - build-essential

@@ -56,6 +56,9 @@ else {
         _ipAddress = nw.ip_address;
     });
 }
+
+//process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 // Load settings 
 var SettingsHelper = require("./lib/SettingsHelper.js");
 var settingsHelper = new SettingsHelper();

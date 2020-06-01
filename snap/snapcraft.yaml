@@ -1,6 +1,6 @@
 name: microservicebus-node
-version: '2.0.11'
-summary: microServiceBus - IoT Device Management
+version: '3.0.0'
+summary: microServiceBus.com - IoT Device Management
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
 grade: stable
@@ -86,7 +86,7 @@ parts:
     npm-flags:
       - --production
     plugin: nodejs
-    node-engine: '12.8.0'
+    node-engine: '14.3.0'
     stage-packages:
     - python2.7
     - build-essential
@@ -107,7 +107,7 @@ parts:
 
   node-headers:
     plugin: dump
-    source: https://nodejs.org/dist/v12.8.0/node-v12.8.0-headers.tar.gz
+    source: https://nodejs.org/dist/v12.8.0/node-v14.3.0-headers.tar.gz
     organize:
      include/: usr/include/
 

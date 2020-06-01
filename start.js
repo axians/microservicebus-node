@@ -184,19 +184,26 @@ function start(testFlag) {
                 settingsHelper.settings.policies.disconnectPolicy.offlineMode) {
 
                 console.log('Starting in offline mode'.red);
-                var MicroServiceBusHost = require("microservicebus-core").Host;
-                var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
-
-                microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
-
-                });
-                microServiceBusHost.OnStopped(function () {
-
-                });
-                microServiceBusHost.OnUpdatedItineraryComplete(function () {
-
-                });
-                microServiceBusHost.Start(testFlag);
+                try{
+                    var MicroServiceBusHost = require("microservicebus-core").Host;
+                    var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
+    
+                    microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
+    
+                    });
+                    microServiceBusHost.OnStopped(function () {
+    
+                    });
+                    microServiceBusHost.OnUpdatedItineraryComplete(function () {
+    
+                    });
+                    microServiceBusHost.Start(testFlag);
+                }
+                catch(ex){
+                    // This can happen if core has not been installed (or has been removed) and the gateway does not have internet access by the time 
+                    // the snap starts up
+                    process.kill(process.pid, 'SIGKILL');
+                }
             }
             else {
                 console.log('Retrying...');

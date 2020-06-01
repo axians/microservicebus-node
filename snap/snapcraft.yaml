@@ -107,7 +107,7 @@ parts:
 
   node-headers:
     plugin: dump
-    source: https://nodejs.org/dist/v12.8.0/node-v14.3.0-headers.tar.gz
+    source: https://nodejs.org/dist/v14.3.0/node-v14.3.0-headers.tar.gz
     organize:
      include/: usr/include/
 

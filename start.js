@@ -46,7 +46,7 @@ process.on('unhandledRejection', err => {
 var _ipAddress;
 var maxWidth = 75;
 var debugPort = 9230;
-let debug = minimist(process.argv.slice(2)).debug || minimist(process.execArgv).debug;
+let debug = minimist(process.argv.slice(2)).inspect || minimist(process.execArgv).inspect;
 var args = process.argv.slice(1);
 
 if (debug)
@@ -56,6 +56,9 @@ else {
         _ipAddress = nw.ip_address;
     });
 }
+
+//process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 // Load settings 
 var SettingsHelper = require("./lib/SettingsHelper.js");
 var settingsHelper = new SettingsHelper();
@@ -181,19 +184,26 @@ function start(testFlag) {
                 settingsHelper.settings.policies.disconnectPolicy.offlineMode) {
 
                 console.log('Starting in offline mode'.red);
-                var MicroServiceBusHost = require("microservicebus-core").Host;
-                var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
+                try {
+                    var MicroServiceBusHost = require("microservicebus-core").Host;
+                    var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
 
-                microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
+                    microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
 
-                });
-                microServiceBusHost.OnStopped(function () {
+                    });
+                    microServiceBusHost.OnStopped(function () {
 
-                });
-                microServiceBusHost.OnUpdatedItineraryComplete(function () {
+                    });
+                    microServiceBusHost.OnUpdatedItineraryComplete(function () {
 
-                });
-                microServiceBusHost.Start(testFlag);
+                    });
+                    microServiceBusHost.Start(testFlag);
+                }
+                catch (ex) {
+                    // This can happen if core has not been installed (or has been removed) and the gateway does not have internet access by the time 
+                    // the snap starts up
+                    process.kill(process.pid, 'SIGKILL');
+                }
             }
             else {
                 console.log('Retrying...');
@@ -219,7 +229,7 @@ function start(testFlag) {
                             console.log(util.padRight(" from the root folder to get the latest version", maxWidth, ' ').bgRed.gray.bold);
                             console.log(util.padRight("", maxWidth, ' ').bgRed.white.bold);
                             console.log();
-                         }
+                        }
                         console.log("Checked version from microservicebus-node");
                         callback();
                     })
@@ -243,7 +253,7 @@ function start(testFlag) {
                             let packageFile;
 
                             // Check if node is started as Snap
-                            if (process.argv[1].endsWith("startsnap")) {
+                            if (process.env["SNAP_USER_DATA"] != null) {
                                 console.log("Loading microservicebus-core/package.json for snap");
                                 console.log("nodePackagePath: " + settingsHelper.nodePackagePath)
                                 packageFile = path.resolve(settingsHelper.nodePackagePath, 'microservicebus-core/package.json');
@@ -260,7 +270,8 @@ function start(testFlag) {
                             var corePjson;
 
                             if (fs.existsSync(packageFile)) {
-                                corePjson = require(packageFile);
+                                corePjson = util.requireNoCache(packageFile);
+                                console.log(`microservicebus-core version: ${corePjson.version}`);
                             }
 
                             var isBeta = args.find(function (a) {
@@ -284,10 +295,10 @@ function start(testFlag) {
                                         coreVersion = beta;
                                         console.log('RUNNING IN BETA MODE'.yellow);
                                         break;
-                                        case "experimental":
-                                            coreVersion = experimental;
-                                            console.log('RUNNING IN BETA MODE'.yellow);
-                                            break;
+                                    case "experimental":
+                                        coreVersion = experimental;
+                                        console.log('RUNNING IN BETA MODE'.yellow);
+                                        break;
                                     case "ignore":
                                         coreVersion = corePjson.version;
                                     default:
@@ -354,11 +365,24 @@ function start(testFlag) {
                     done(err);
                 }
                 else {
+                    if (process.env["MSB_USE_IMEI"] == 'true') {
+                        process.argv.push("--imei");
+                    }
                     let microservicebusCore = "microservicebus-core";
                     if (pjson.config && pjson.config.microservicebusCore) {
                         microservicebusCore = pjson.config.microservicebusCore;
                     }
                     console.log("Starting ".grey + microservicebusCore.grey);
+
+                    let cachedFiles = Object.keys(require.cache).filter((c)=>{
+                        return true;//c.indexOf(microservicebusCore) >= 0;
+                    });
+                    
+                    cachedFiles.forEach((c)=>{
+                        delete require.cache[c];
+                    });
+                    console.log('require cache has been cleared'.grey);
+                    
                     var MicroServiceBusHost = require(microservicebusCore).Host;
                     var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
 

@@ -1,6 +1,6 @@
 name: microservicebus-node
-version: '2.0.7'
-summary: microServiceBus - IoT Device Management
+version: '3.0.0'
+summary: microServiceBus.com - IoT Device Management
 description: |
   microServiceBus.com ® enables businesses to combine the power of Enterprise Application Integration (EAI) with agility and reach of Internet of Things (IoT). https://microservicebus.com/
 grade: stable
@@ -75,6 +75,7 @@ environment:
   NPM_CONFIG_CACHE: $SNAP_USER_DATA/.npm
   GYP_CONFIG_DIR: $SNAP_USER_DATA/.gyp
   MSB_NODEPATH: $SNAP_USER_DATA/dummy
+  MSB_USE_IMEI: "true"
   HOME: $SNAP_USER_DATA
   NPM_CONFIG_DEVDIR: $SNAP_USER_DATA/.gyp
   NPM_CONFIG_NODEDIR: $SNAP/usr/include/node
@@ -85,7 +86,7 @@ parts:
     npm-flags:
       - --production
     plugin: nodejs
-    node-engine: '8.15.0'
+    node-engine: '14.3.0'
     stage-packages:
     - python2.7
     - build-essential
@@ -98,14 +99,15 @@ parts:
       - -usr/lib/x86_64-linux-gnu/libpthread.so
       - -usr/include/node/config.gypi
       - -include/node/config.gypi
-
+    prime:
+      - -lib/node_modules/microservicebus-node/node_modules/tar/lib/.mkdir.js.swp
   libhack:
     plugin: dump
     source: ./libhack
 
   node-headers:
     plugin: dump
-    source: https://nodejs.org/dist/v8.15.0/node-v8.15.0-headers.tar.gz
+    source: https://nodejs.org/dist/v14.3.0/node-v14.3.0-headers.tar.gz
     organize:
      include/: usr/include/
 

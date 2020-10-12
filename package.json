@@ -67,7 +67,7 @@
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha"
   },
-  "version": "3.2.0",
+  "version": "3.3.0",
   "config": {
     "microservicebusCore": "microservicebus-core"
   }

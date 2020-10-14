@@ -50,7 +50,7 @@ if (args.length > 0) {
             break;
         case '--local':
         case '-local':
-            site = "wss://localhost:44302";
+            site = "wss://localhost:44390";
             break;
         case '--dev':
         case '-dev':

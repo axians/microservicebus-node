@@ -26,18 +26,8 @@
     "uuid": "8.3.0"
   },
   "description": "node.js node for microservicebus. Please visit https://microservicebus.com for more information.",
-  "devDependencies": {
-    "assert": "2.0.0",
-    "body-parser": "1.19.0",
-    "chai": "4.2.0",
-    "express": "4.17.1",
-    "mocha": "8.0.1",
-    "nyc": "15.1.0",
-    "should": "13.2.3",
-    "supertest": "4.0.2"
-  },
   "engines": {
-    "node": ">=0.12.0 <10.1.1"
+    "node": ">=10.14.2 <14.13.0"
   },
   "keywords": [
     "IoT",
@@ -59,15 +49,7 @@
     "type": "git",
     "url": "https://github.com/axians/microservicebus-node"
   },
-  "nyc_": {
-    "include": [
-      "**/node_modules/"
-    ]
-  },
-  "scripts": {
-    "test": "nyc --reporter=html --reporter=text mocha"
-  },
-  "version": "3.3.0",
+  "version": "3.3.1",
   "config": {
     "microservicebusCore": "microservicebus-core"
   }

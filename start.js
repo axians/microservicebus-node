@@ -205,6 +205,12 @@ function start(testFlag) {
                     process.kill(process.pid, 'SIGKILL');
                 }
             }
+            else if(err.code === "EAI_AGAIN"){
+                console.log("Not able to resolve DNS...rebooting in 5 minutes");
+                setTimeout(() => {
+                    util.reboot();
+                }, 5 * 60 * 1000);
+            }
             else {
                 console.log('Retrying...');
                 setTimeout(() => {

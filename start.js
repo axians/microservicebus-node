@@ -175,41 +175,52 @@ function start(testFlag) {
     console.log(util.padRight("", maxWidth, ' ').bgBlue.white.bold);
     console.log();
 
-    checkVersionsAndStart(function (err) {
+    checkVersionsAndStart( async (err) => {
         if (err) {
             if ((err.code === "ECONNREFUSED" ||
                 err.code === "EACCES" ||
-                err.code === "ENOTFOUND") &&
+                err.code === "ENOTFOUND" ||
+                err.code === "EAI_AGAIN") &&
                 settingsHelper.settings.policies &&
                 settingsHelper.settings.policies.disconnectPolicy.offlineMode) {
 
-                console.log('Starting in offline mode'.red);
-                try {
-                    var MicroServiceBusHost = require("microservicebus-core").Host;
-                    var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
+                console.log("Testing internet connection...")
+                let internetConnectinon = await callUri("https://8.8.8.8");
+                console.log(`...internet connection: ${internetConnectinon}`);
 
-                    microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
+                console.log("Testing DNS...")
+                let dnsResolve = await callUri("https://registry.npmjs.org");
+                console.log(`...DNS: ${dnsResolve}`);
 
-                    });
-                    microServiceBusHost.OnStopped(function () {
+                if (!internetConnectinon) {
+                    console.log('Starting in offline mode'.red);
+                    try {
+                        var MicroServiceBusHost = require("microservicebus-core").Host;
+                        var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
 
-                    });
-                    microServiceBusHost.OnUpdatedItineraryComplete(function () {
+                        microServiceBusHost.OnStarted(function (loadedCount, exceptionCount) {
 
-                    });
-                    microServiceBusHost.Start(testFlag);
+                        });
+                        microServiceBusHost.OnStopped(function () {
+
+                        });
+                        microServiceBusHost.OnUpdatedItineraryComplete(function () {
+
+                        });
+                        microServiceBusHost.Start(testFlag);
+                    }
+                    catch (ex) {
+                        // This can happen if core has not been installed (or has been removed) and the gateway does not have internet access by the time 
+                        // the snap starts up
+                        process.kill(process.pid, 'SIGKILL');
+                    }
                 }
-                catch (ex) {
-                    // This can happen if core has not been installed (or has been removed) and the gateway does not have internet access by the time 
-                    // the snap starts up
-                    process.kill(process.pid, 'SIGKILL');
+                else {
+                    console.log("Not able to resolve DNS...rebooting in 5 minutes");
+                    setTimeout(() => {
+                        util.reboot();
+                    }, 5 * 60 * 1000);
                 }
-            }
-            else if(err.code === "EAI_AGAIN"){
-                console.log("Not able to resolve DNS...rebooting in 5 minutes");
-                setTimeout(() => {
-                    util.reboot();
-                }, 5 * 60 * 1000);
             }
             else {
                 console.log('Retrying...');
@@ -220,6 +231,22 @@ function start(testFlag) {
         }
     });
 
+    var callUri = function (uri) {
+        return new Promise((resolve) => {
+           try {
+              const req = https.get(uri);
+              req.on('data', function (err) {
+                 resolve(true);
+              });
+              req.on('error', function (err) {
+                resolve(false);
+              });
+     
+           } catch (error) {
+            resolve(false);
+           }
+        });
+     }
 
     function checkVersionsAndStart(done) {
         async.waterfall([
@@ -380,15 +407,15 @@ function start(testFlag) {
                     }
                     console.log("Starting ".grey + microservicebusCore.grey);
 
-                    let cachedFiles = Object.keys(require.cache).filter((c)=>{
+                    let cachedFiles = Object.keys(require.cache).filter((c) => {
                         return true;//c.indexOf(microservicebusCore) >= 0;
                     });
-                    
-                    cachedFiles.forEach((c)=>{
+
+                    cachedFiles.forEach((c) => {
                         delete require.cache[c];
                     });
                     console.log('require cache has been cleared'.grey);
-                    
+
                     var MicroServiceBusHost = require(microservicebusCore).Host;
                     var microServiceBusHost = new MicroServiceBusHost(settingsHelper);
 

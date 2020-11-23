@@ -175,7 +175,7 @@ function start(testFlag) {
     console.log(util.padRight("", maxWidth, ' ').bgBlue.white.bold);
     console.log();
 
-    checkVersionsAndStart( async (err) => {
+    checkVersionsAndStart(async (err) => {
         if (err) {
             if ((err.code === "ECONNREFUSED" ||
                 err.code === "EACCES" ||
@@ -233,20 +233,20 @@ function start(testFlag) {
 
     var callUri = function (uri) {
         return new Promise((resolve) => {
-           try {
-              const req = https.get(uri);
-              req.on('data', function (err) {
-                 resolve(true);
-              });
-              req.on('error', function (err) {
+            try {
+                const req = https.get(uri);
+                req.on('data', function (err) {
+                    resolve(true);
+                });
+                req.on('error', function (err) {
+                    resolve(false);
+                });
+
+            } catch (error) {
                 resolve(false);
-              });
-     
-           } catch (error) {
-            resolve(false);
-           }
+            }
         });
-     }
+    }
 
     function checkVersionsAndStart(done) {
         async.waterfall([
@@ -393,6 +393,10 @@ function start(testFlag) {
             }
         ],
             function (err) { // Starting microServiceBusHost
+                // Add path to home directory to global paths
+                require('app-module-path').addPath(settingsHelper.nodePackagePath);
+                require('module').globalPaths.push(settingsHelper.nodePackagePath);
+
                 if (err) {
                     console.log('ERROR: ' + err);
                     done(err);

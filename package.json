@@ -27,7 +27,7 @@
   },
   "description": "node.js node for microservicebus. Please visit https://microservicebus.com for more information.",
   "engines": {
-    "node": ">=10.14.2 <14.13.0"
+    "node": ">=10.14.2 <14.16.0"
   },
   "keywords": [
     "IoT",
@@ -49,7 +49,7 @@
     "type": "git",
     "url": "https://github.com/axians/microservicebus-node"
   },
-  "version": "3.4.3",
+  "version": "3.4.4",
   "config": {
     "microservicebusCore": "microservicebus-core"
   }

@@ -37,6 +37,7 @@ var async = require('async');
 let network = require('network');
 let minimist = require('minimist');
 
+console.log(`PROCESS: ${require('process').pid}`)
 util.prepareNpm();
 
 process.on('unhandledRejection', err => {
@@ -272,7 +273,7 @@ function start(testFlag) {
                     });
             },
             function (callback) { // Check version of microservicebus-core
-
+                console.log("Check version of microservicebus-core");
                 let microservicebusCore = "microservicebus-core";
                 if (pjson.config && pjson.config.microservicebusCore) {
                     microservicebusCore = pjson.config.microservicebusCore;
@@ -326,11 +327,9 @@ function start(testFlag) {
                                         break;
                                     case "beta":
                                         coreVersion = beta;
-                                        console.log('RUNNING IN BETA MODE'.yellow);
                                         break;
                                     case "experimental":
                                         coreVersion = experimental;
-                                        console.log('RUNNING IN BETA MODE'.yellow);
                                         break;
                                     case "ignore":
                                         coreVersion = corePjson.version;
@@ -339,7 +338,7 @@ function start(testFlag) {
                                         break;
                                 }
                             }
-
+                            console.log(`Running ${coreVersion} mode`);
                             if (corePjson === undefined || util.compareVersion(corePjson.version, coreVersion) !== 0) {
                                 var version = corePjson === undefined ? "NONE" : corePjson.version;
                                 console.log();
@@ -378,6 +377,7 @@ function start(testFlag) {
                                 });
                             }
                             else {
+                                console.log(`Running latest version`);
                                 callback();
                             }
                         }
@@ -393,6 +393,7 @@ function start(testFlag) {
             }
         ],
             function (err) { // Starting microServiceBusHost
+                console.log("Starting microServiceBusHost");
                 // Add path to home directory to global paths
                 require('app-module-path').addPath(settingsHelper.nodePackagePath);
                 require('module').globalPaths.push(settingsHelper.nodePackagePath);
@@ -403,6 +404,7 @@ function start(testFlag) {
                 }
                 else {
                     if (process.env["MSB_USE_IMEI"] == 'true') {
+                        console.log("MSB_USE_IMEI === true");
                         process.argv.push("--imei");
                     }
                     let microservicebusCore = "microservicebus-core";

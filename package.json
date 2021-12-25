@@ -22,7 +22,7 @@
     "package-json": "2.2.0",
     "request": "2.88.2",
     "require-reload": "0.2.2",
-    "tar": "6.0.2",
+    "tar": "6.1.11",
     "uuid": "8.3.0"
   },
   "description": "node.js node for microservicebus. Please visit https://microservicebus.com for more information.",
@@ -40,6 +40,7 @@
     "AWS",
     "AWS IOT",
     "AXIANS",
+    "VINCI-ENERGIES",
     "VINCI"
   ],
   "license": "MIT",
@@ -49,7 +50,7 @@
     "type": "git",
     "url": "https://github.com/axians/microservicebus-node"
   },
-  "version": "3.4.4",
+  "version": "3.4.5",
   "config": {
     "microservicebusCore": "microservicebus-core"
   }

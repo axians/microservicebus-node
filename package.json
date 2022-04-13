@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "app-module-path": "2.2.0",
-    "async": "3.2.0",
+    "async": "3.2.2",
     "colors": "1.4.0",
     "compare-version": "0.1.2",
     "minimist": "1.2.5",

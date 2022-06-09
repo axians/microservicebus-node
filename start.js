@@ -38,7 +38,6 @@ let network = require('network');
 let minimist = require('minimist');
 
 console.log(`PROCESS: ${require('process').pid}`)
-util.prepareNpm();
 
 process.on('unhandledRejection', err => {
     console.log("SERIOUS ERROR: Caught unhandledRejection. ", err);

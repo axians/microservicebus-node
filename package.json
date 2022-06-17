@@ -51,7 +51,7 @@
     "type": "git",
     "url": "https://github.com/axians/microservicebus-node"
   },
-  "version": "3.9.91",
+  "version": "4.0.0",
   "config": {
     "microservicebusCore": "microservicebus-core"
   }

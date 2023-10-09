@@ -9,7 +9,8 @@ return;
 var path = require("path");
 var os = require('os');
 var url = require('url');
-var request = require("request");
+//var request = require("request");
+var request = require("./lib/WebRequest");
 var exec = require('child_process').exec;
 var debug = process.execArgv.find(function (e) { return e.startsWith('--debug'); }) !== undefined;
 var MAXIMEITRYCOUNT = 3;
@@ -17,7 +18,6 @@ var currentImieTryCount = 0;
 // Load settings 
 var SettingsHelper = require("./lib/SettingsHelper.js");
 var settingsHelper = new SettingsHelper();
-
 var packagePath = settingsHelper.nodePackagePath;
 
 process.env.NODE_PATH = process.env.NODE_PATH ? process.env.NODE_PATH + ":" + packagePath : packagePath;
@@ -152,7 +152,8 @@ function SnapLoginHandler(settingsHelper) {
         let host = process.env.MSB_HOST ? process.env.MSB_HOST: url.parse(settingsHelper.settings.hubUri).host;
         let uri = `https://${host}/jasper/signInUsingIMEI?imeiId=${imei}&hostname=${os.hostname()}`;
         console.log("STARTSNAP: calling jasper service..." + uri);
-        request.post({ url: uri, timeout: 5000 }, function (err, response, body) {
+        const options = { url: uri, maxAttempts: 3,retryDelay: 5000, method: "POST" };
+        request.post(options, function (err, response, body) {
             if (err) {
                 console.error("STARTSNAP: ERROR: error: " + err);
                 callback();

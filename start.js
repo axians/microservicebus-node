@@ -34,7 +34,7 @@ var checkVersion = require('package-json');
 var fs = require('fs');
 var os = require('os');
 var async = require('async');
-let network = require('network');
+let network = require('msb-network');
 let minimist = require('minimist');
 
 console.log(`PROCESS: ${require('process').pid}`)
